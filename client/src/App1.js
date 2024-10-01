@@ -2,7 +2,7 @@ import React from "react";
 import Register from "./components/Register";
 import Login from "./components/Login";
 
-const App = () => {
+const App1 = () => {
   return (
     <div>
       <h1>Authentication Example</h1>
@@ -12,4 +12,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default App1;
