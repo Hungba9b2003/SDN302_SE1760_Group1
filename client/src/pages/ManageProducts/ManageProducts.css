@@ -1,0 +1,151 @@
+.manage {
+    margin: 20px 0px;
+}
+
+.manage hr {
+    height: 1px;
+    background-color: #E2E2E2;
+    border: none;
+}
+
+.manage-items-title {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr 0.5fr;
+    align-items: center;
+    color: grey;
+    font-size: max(1vw, 12px);
+}
+
+.manage-items-item {
+    margin: 10px 0px;
+    color: black;
+}
+
+.manage-items-item img {
+    width: 50px;
+}
+
+.manage-items-item div {
+    max-width: 40px;
+    text-align: center;
+    border: 1px solid #EBEBEB;
+    padding: 8px 8px;
+    font-size: 12px;
+}
+.manage-items-remove-icon{
+    cursor: pointer;
+}
+.manage-bottom {
+    margin-top: 80px;
+    display: flex;
+    justify-content: space-between;
+    gap: max(12vw,20px);
+}
+
+.manage-total {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.manage-total-details {
+    display: flex;
+    justify-content: space-between;
+    color: #555555;
+}
+
+.manage-total hr {
+    margin: 10px 0px;
+}
+
+.manage-total button {
+    border: none;
+    color: white;
+    background-color: #FF4C24;
+    width: max(15vw,200px);
+    padding: 12px 0px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.manage-promocode {
+    flex: 1;
+}
+.manage-promocode p{
+    color: #555555;
+}
+.manage-promocode-input{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #eaeaea;
+    border-radius: 4px;
+}
+.manage-promocode-input input{
+    background: transparent;
+    border: none;
+    outline: none;
+    padding-left: 10px;
+}
+.manage-promocode-input button{
+    width: max(10vw,150px);
+    padding: 12px 5px;
+    background-color: black;
+    border: none;
+    color: white;
+    border-radius: 4px;
+}
+
+.create button {
+    background: transparent;
+    font-size: 16px;
+    color: #49557E;
+    border: 1px solid #FF4C24;
+    padding: 10px 30px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin: 20px;
+    
+}
+.create{
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    margin-bottom: 20px;
+}
+
+.create button:hover {
+    background: #fff4f2;
+}
+
+.search input{
+    outline: none;
+    border: 1px solid #C9C9C9;
+    padding: 5px;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.search-button button{
+    background: transparent;
+    font-size: 16px;
+    color: #ffffff;
+    background-color:#FF4C24 ;
+    border: 1px solid #FF4C24;
+    border-radius: 5px;
+    padding: 5px 30px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+@media(max-width:750px) {
+    .manage-bottom {
+        flex-direction: column-reverse;
+    }
+    .manage-promocode{
+        justify-content: start;
+    }
+}
