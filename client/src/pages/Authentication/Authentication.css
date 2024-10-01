@@ -38,13 +38,13 @@
     z-index: 100;
     min-height: 300px;
     background-color: white;
-    width: max(23vw, 500px);
+    width: max(23vw, 600px);
     color: #808080;
     display: flex;
     flex-direction: column;
     gap: 25px;
     margin-bottom: 60px;
-    padding: 25px 30px;
+    padding: 40px 80px 70px;
     border-radius: 8px;
     font-size: 14px;
     animation: fadeIn 0.5s;

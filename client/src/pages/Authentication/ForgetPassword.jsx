@@ -18,6 +18,35 @@ const ForgetPassword = () => {
   const [prevAction, setPrevAction] = useState("");
   const [resendDisabled, setResendDisabled] = useState(false);
   const [otp, setOtp] = useState("");
+
+  const navigateTo = (state) => {
+    setCurrState(state);
+    history.pushState({ currState: state }, "", `#${state}`);
+    console.log(window.history.state);
+  };
+
+  useEffect(() => {
+    console.log("oke");
+    const initialHash = window.location.hash.substring(1);
+    if (initialHash) {
+      setCurrState(initialHash);
+    }
+
+    const handlePopState = (event) => {
+      if (event.state && event.state.currState) {
+        setCurrState(event.state.currState);
+      } else {
+        setCurrState("forgetPassword");
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
   const handleForgetPassword = async () => {
     if (role === "") {
       document.getElementById("message").textContent =
@@ -63,7 +92,7 @@ const ForgetPassword = () => {
       <div className="login">
         <div className="login-container">
           <div className="login-title" style={{ justifyContent: "center" }}>
-            <h2>Vui lòng nhập OTP</h2>
+            <h2>Enter OTP</h2>
           </div>
           <OtpInput
             value={otp}
@@ -96,21 +125,19 @@ const ForgetPassword = () => {
               className={`resend-otp ${resendDisabled ? "disabled" : ""}`}
             >
               {resendDisabled
-                ? `Vui lòng thử lại sau ${timer} giây...`
-                : "Gửi lại OTP"}
+                ? `Please try again later ${timer} second...`
+                : "Resend OTP"}
             </button>
           </div>
-          <div className="otp-actions">
-            <button onClick={handleBack}>Quay lại</button>
-            <button
-              onClick={() => {
-                setCurrState("resetPassword");
-                alert("OTP is correctly!");
-              }}
-            >
-              Xác nhận
-            </button>
-          </div>
+
+          <button
+            onClick={() => {
+              navigateTo("resetPassword");
+              alert("OTP is correctly!");
+            }}
+          >
+            Next
+          </button>
         </div>
       </div>
     </>
@@ -122,22 +149,20 @@ const ForgetPassword = () => {
         <div className="login">
           <div className="login-container">
             <div className="login-title">
-              <h2>Forget Password</h2>
-              <img src={assets.cross_icon} alt="" />
+              <h2>Change password:</h2>
             </div>
             <div className="login-inputs">
-              Please enter the email you use to log in*
               <label>New password:</label>
               <input
                 type="text"
-                placeholder="Enter your new password"
+                placeholder="Enter new password"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
-              <label>Confirm new password:</label>
+              <label>Re-enter password:</label>
               <input
                 type="text"
-                placeholder="Enter your new password again"
+                placeholder="Enter new password"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -167,23 +192,17 @@ const ForgetPassword = () => {
       <div className="content-wrapper">
         <div className="login">
           <div className="login-container">
-            <div className="login-title">
-              <h2>Forget Password</h2>
-              <img src={assets.cross_icon} alt="" />
+            <div className="">
+              <h2 style={{ textAlign: "center" }}>Forgot password</h2>
             </div>
             <div className="login-inputs">
-              Please enter new password you use to log in*
-              <label>New password:</label>
+              <span style={{ color: "red" }}>
+                Please enter the email you use to log in*
+              </span>
+              <label>Your email:</label>
               <input
                 type="text"
-                placeholder="Enter your new password"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-              <label>Confirm new password:</label>
-              <input
-                type="text"
-                placeholder="Enter your new password again"
+                placeholder="Enter email"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -195,7 +214,7 @@ const ForgetPassword = () => {
             ></div>
             <button
               onClick={() => {
-                setCurrState("otp");
+                navigateTo("otp");
               }}
             >
               Next

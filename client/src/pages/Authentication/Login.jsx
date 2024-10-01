@@ -22,7 +22,9 @@ const Login = () => {
       document.getElementById("message").textContent =
         "Please choose role before login";
       document.getElementById("message").style.display = "block";
+      return;
     }
+    navigate("/");
     try {
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
@@ -45,7 +47,13 @@ const Login = () => {
           <div className="login-container">
             <div className="login-title">
               <h2>Login</h2>
-              <img src={assets.cross_icon} alt="" />
+              <img
+                src={assets.cross_icon}
+                alt=""
+                onClick={() => {
+                  navigate("/");
+                }}
+              />
             </div>
             <div>
               Choose your role:

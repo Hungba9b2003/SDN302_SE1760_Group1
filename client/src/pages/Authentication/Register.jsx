@@ -115,8 +115,8 @@ const Register = () => {
               className={`resend-otp ${resendDisabled ? "disabled" : ""}`}
             >
               {resendDisabled
-                ? `Vui lòng thử lại sau ${timer} giây...`
-                : "Gửi lại OTP"}
+                ? `Please try again later ${timer} second...`
+                : "Resend OTP"}
             </button>
           </div>
           <div className="otp-actions">
@@ -305,6 +305,27 @@ const Register = () => {
                         onChange={(e) => setAddress(e.target.value)}
                       />
                     </div>
+                  </div>
+                  <div className="input-row">
+                    <div className="half-width">
+                      <label>ID card number:</label>
+                      <br></br>
+                      <input
+                        type="text"
+                        placeholder="Retype Password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="half-width">
+                    <label>Front photo of ID card:</label>
+                    <input
+                      type="file"
+                      placeholder="Retype Password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
                   </div>
 
                   {/* <div className="half-width">
