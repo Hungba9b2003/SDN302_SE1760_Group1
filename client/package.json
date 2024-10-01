@@ -10,7 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
+=======
+    "bootstrap": "^5.3.3",
+    "prop-types": "^15.8.1",
+>>>>>>> refs/remotes/origin/hoanlq
     "react": "^18.2.0",
+    "react-bootstrap": "^2.10.5",
     "react-dom": "^18.2.0",
     "react-otp-input": "^3.1.1",
     "react-router-dom": "^6.26.2"
