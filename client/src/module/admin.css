@@ -1,0 +1,197 @@
+/* admin.css */
+
+.admin-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+/* navbar */
+.admin-navbar {
+  display: flex; /* Flexbox for horizontal layout */
+  justify-content: space-between; /* Space between title and links */
+  align-items: center; /* Center items vertically */
+  background-color: #bf1919; /* Navbar background color */
+  color: #ffffff; /* White text color */
+  padding: 15px 30px; /* Padding for the navbar */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+}
+
+.admin-navbar-title h1 {
+  margin: 0; /* Remove default margin */
+  font-size: 24px; /* Title font size */
+}
+
+.admin-navbar-links {
+  display: flex; /* Flexbox for horizontal links */
+  gap: 20px; /* Space between links */
+}
+
+.admin-navbar-links a {
+  color: white; /* Link text color */
+  text-decoration: none; /* Remove underline from links */
+  padding: 10px 15px; /* Padding around links */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s; /* Smooth transition */
+}
+
+.admin-navbar-links a:hover {
+  background-color: rgba(255, 255, 255, 0.2); /* Light background on hover */
+}
+
+.admin-navbar-links .active {
+  background-color: rgba(255, 255, 255, 0.3); /* Highlight active link */
+  font-weight: bold; /* Bold text for active link */
+}
+
+/* sidebar */
+
+.admin-sidebar {
+  width: 200px;
+  background-color: #f4f4f4;
+  padding: 15px;
+}
+
+.admin-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.admin-sidebar ul li {
+  margin: 10px 0;
+}
+
+.admin-sidebar ul li a {
+  text-decoration: none;
+  color: #333;
+}
+
+/* Admin Product */
+.add-product-form {
+  margin-bottom: 20px;
+}
+
+.add-product-form input,
+.add-product-form textarea {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.add-product-form button {
+  padding: 10px 15px;
+  background-color: #007bff; /* Blue color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-product-form button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.product-table th,
+.product-table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.product-table th {
+  background-color: #f2f2f2; /* Light gray background */
+}
+
+/* table in revenue & feedback */
+/* Common Table Styles */
+.table {
+  width: 100%; /* Full width */
+  border-collapse: collapse; /* Merge borders */
+  margin-top: 20px; /* Space above the table */
+}
+
+.table th,
+.table td {
+  padding: 12px 15px; /* Padding inside cells */
+  border: 1px solid #ccc; /* Light gray border */
+  text-align: left; /* Left-align text */
+}
+
+.table th {
+  background-color: #007bff; /* Blue background for header */
+  color: white; /* White text for header */
+  font-weight: bold; /* Bold font for header */
+}
+
+.table tbody tr {
+  transition: background-color 0.3s; /* Smooth transition for hover */
+}
+
+.table tbody tr:hover {
+  background-color: #f1f1f1; /* Light gray background on hover */
+}
+
+.table td {
+  background-color: #fff; /* White background for cells */
+  color: #333; /* Dark text color */
+}
+
+/* Specific Styles for Revenue Report Table */
+.revenue-table th {
+  font-size: 1.1rem; /* Slightly larger font size for revenue table header */
+}
+
+.revenue-table td {
+  font-size: 1rem; /* Normal font size for revenue table cells */
+}
+
+/* Specific Styles for Feedback Table */
+.feedback-table th {
+  font-size: 1.1rem; /* Slightly larger font size for feedback table header */
+}
+
+.feedback-table td {
+  font-size: 1rem; /* Normal font size for feedback table cells */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .table {
+    font-size: 14px; /* Smaller font size on mobile */
+  }
+}
+
+
+.admin-content {
+  display: flex;
+  flex: 1;
+}
+
+.admin-main {
+  flex: 1;
+  padding: 20px;
+}
+
+.admin-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.stat-card {
+  flex: 1;
+  background-color: #e2e2e2;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 20px;
+}

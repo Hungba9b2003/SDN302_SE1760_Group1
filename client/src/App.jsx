@@ -1,32 +1,34 @@
-import React, { useState } from 'react'
-import Home from './pages/Home/Home'
-import Footer from './components/Footer/Footer'
-import Navbar from './components/Navbar/Navbar'
-import { Route, Routes } from 'react-router-dom'
-import Cart from './pages/Cart/Cart'
-import LoginPopup from './components/LoginPopup/LoginPopup'
-import PlaceOrder from './pages/PlaceOrder/PlaceOrder'
-import MyOrders from './pages/MyOrders/MyOrders'
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Footer from "./components/Footer/Footer";
+
+import AdminDashboard from "./components/AdminComponents/AdminDashboard";
+import AdminRevenueReport from "./pages/AdminPages/AdminRevenueReport";
+import AdminUsers from "./pages/AdminPages/AdminUser";
+import AdminFeedbackRating from "./pages/AdminPages/AdminFeedbackRating";
+import AdminProduct from "./pages/AdminPages/AdminProduct";
 
 const App = () => {
-
-  const [showLogin,setShowLogin] = useState(false);
-
   return (
     <>
-    {showLogin?<LoginPopup setShowLogin={setShowLogin}/>:<></>}
-      <div className='app'>
-        <Navbar setShowLogin={setShowLogin}/>
-        <Routes>
-          <Route path='/' element={<Home/>}/>
-          <Route path='/cart' element={<Cart/>}/>
-          <Route path='/order' element={<PlaceOrder/>}/>
-          <Route path='/myorder' element={<MyOrders/>}/>
-        </Routes>
-      </div>
+      <Routes>
+        {/* <Route path="/" element={<Home />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/order" element={<PlaceOrder />} />
+        <Route path="/myorder" element={<MyOrders />} /> */}
+
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/revenue-report" element={<AdminRevenueReport />} />
+        <Route path="/admin/users" element={<AdminUsers />} />
+        <Route path="/admin/product" element={<AdminProduct />} />
+        <Route
+          path="/admin/feedback-rating"
+          element={<AdminFeedbackRating />}
+        />
+      </Routes>
       <Footer />
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
