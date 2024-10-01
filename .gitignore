@@ -7,5 +7,8 @@ server/node_modules/
 client/build/
 
 # Bỏ qua các file tạm thời khác
-.env
+client/.env
+server/.env
+client/package-lock.json
+server/package-lock.json
 server/logs/
