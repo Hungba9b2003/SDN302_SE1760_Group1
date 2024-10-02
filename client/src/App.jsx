@@ -28,7 +28,8 @@ const App = () => {
   const [updateProduct, setUpdateProduct] = useState(false);
   return (
     <>
-      <Navbar />
+      {!location.pathname.includes("/admin") && <Navbar />}
+
       {createProduct ? (
         <CreateProductPopup setCreateProduct={setCreateProduct} />
       ) : null}
