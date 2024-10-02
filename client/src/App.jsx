@@ -13,6 +13,11 @@ import CreateProductPopup from "./pages/ManageProducts/CreateProductPopup";
 import ManageProducts from "./pages/ManageProducts/ManageProducts";
 import UpdateProductPopup from "./pages/ManageProducts/UpdateProductPopup";
 import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./components/AdminComponents/AdminDashboard";
+import AdminRevenueReport from "./pages/AdminPages/AdminRevenueReport";
+import AdminUsers from "./pages/AdminPages/AdminUser";
+import AdminFeedbackRating from "./pages/AdminPages/AdminFeedbackRating";
+import AdminProduct from "./pages/AdminPages/AdminProduct";
 
 import "./index.css";
 
@@ -43,6 +48,17 @@ const App = () => {
             <Route path="/order" element={<PlaceOrder />} />
             <Route path="/myorder" element={<MyOrders />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route
+              path="/admin/revenue-report"
+              element={<AdminRevenueReport />}
+            />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/product" element={<AdminProduct />} />
+            <Route
+              path="/admin/feedback-rating"
+              element={<AdminFeedbackRating />}
+            />
             <Route
               path="/manage"
               element={
