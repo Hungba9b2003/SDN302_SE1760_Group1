@@ -13,8 +13,9 @@ import CreateProductPopup from "./pages/ManageProducts/CreateProductPopup";
 import ManageProducts from "./pages/ManageProducts/ManageProducts";
 import UpdateProductPopup from "./pages/ManageProducts/UpdateProductPopup";
 import Dashboard from "./pages/Dashboard";
+
 import "./index.css";
-import "./App.css";
+
 const App = () => {
   const location = useLocation();
   const [createProduct, setCreateProduct] = useState(false);
