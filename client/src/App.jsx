@@ -12,6 +12,7 @@ import Register from "./pages/Authentication/Register";
 import CreateProductPopup from "./pages/ManageProducts/CreateProductPopup";
 import ManageProducts from "./pages/ManageProducts/ManageProducts";
 import UpdateProductPopup from "./pages/ManageProducts/UpdateProductPopup";
+import Dashboard from "./pages/Dashboard";
 const App = () => {
   const location = useLocation();
   const [createProduct, setCreateProduct] = useState(false);
@@ -38,6 +39,7 @@ const App = () => {
             <Route path="/cart" element={<Cart />} />
             <Route path="/order" element={<PlaceOrder />} />
             <Route path="/myorder" element={<MyOrders />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route
               path="/manage"
               element={

@@ -7,5 +7,13 @@ server/mydatabase.js
 client/build/
 
 # Bỏ qua các file tạm thời khác
+<<<<<<< HEAD
 .env
 server/logs/
+=======
+client/.env
+server/.env
+client/package-lock.json
+server/package-lock.json
+server/logs/
+>>>>>>> PhongTHHE171494
