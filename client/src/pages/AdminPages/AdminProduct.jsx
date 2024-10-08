@@ -1,36 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import '../../module/admin.css'; // Adjust the path as needed
-import AdminNavbar from '../../components/AdminComponents/AdminNavbar';
-import AdminSidebar from '../../components/AdminComponents/AdminSidebar';
+import React, { useState } from "react";
+import "../../module/admin.css";
+import AdminNavbar from "../../components/AdminComponents/AdminNavbar";
+import AdminSidebar from "../../components/AdminComponents/AdminSidebar";
+
+import CreatePopup from "../../components/AdminComponents/CreatePopUp";
+import UpdateProductPopup from "../../components/AdminComponents/EditPopUp";
 
 const ProductManagement = () => {
-  const [products, setProducts] = useState([]);
-  const [newProduct, setNewProduct] = useState({ name: '', price: '', description: '' });
+  const [products, setProducts] = useState([
+    {
+      id: 1,
+      name: "Pizza Margherita",
+      price: 10.99,
+      description:
+        "Classic pizza with tomato sauce, mozzarella cheese, and fresh basil.",
+    },
+    {
+      id: 2,
+      name: "California Roll",
+      price: 12.5,
+      description: "Sushi roll with avocado, cucumber, and crabmeat.",
+    },
+    {
+      id: 3,
+      name: "Chicken Fried Rice",
+      price: 8.99,
+      description: "Fried rice with chicken, vegetables, and egg.",
+    },
+  ]);
 
-  useEffect(() => {
-    // Fetch products from the backend API
-    fetch('/api/admin/products')
-      .then(response => response.json())
-      .then(data => setProducts(data))
-      .catch(error => console.error('Error fetching products:', error));
-  }, []);
-
-  const handleAddProduct = () => {
-    // Add a new product to the backend API
-    fetch('/api/admin/products', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newProduct),
-    })
-      .then(response => response.json())
-      .then(data => {
-        setProducts([...products, data]); // Update the product list
-        setNewProduct({ name: '', price: '', description: '' }); // Reset the form
-      })
-      .catch(error => console.error('Error adding product:', error));
-  };
+  const [createProduct, setCreateProduct] = useState(false);
+  const [updateProduct, setUpdateProduct] = useState(false);
 
   return (
     <div className="admin-container">
@@ -40,30 +40,11 @@ const ProductManagement = () => {
         <div className="admin-main">
           <h1>Product Management</h1>
 
-          <div className="add-product-form">
-            <h2>Add New Product</h2>
-            <input 
-              type="text" 
-              placeholder="Product Name" 
-              value={newProduct.name}
-              onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })} 
-            />
-            <input 
-              type="number" 
-              placeholder="Price" 
-              value={newProduct.price}
-              onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })} 
-            />
-            <textarea 
-              placeholder="Description" 
-              value={newProduct.description}
-              onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })} 
-            />
-            <button onClick={handleAddProduct}>Add Product</button>
-          </div>
-
           <div className="product-list">
-            <h2>Existing Products</h2>
+            <h2>List Products</h2>
+            <button onClick={() => setCreateProduct(true)}>
+              Create Product
+            </button>
             <table className="product-table">
               <thead>
                 <tr>
@@ -75,21 +56,24 @@ const ProductManagement = () => {
               </thead>
               <tbody>
                 {products.map((product) => (
-                  <tr key={product.id}>
+                  <tr key={product.id} onClick={() => setUpdateProduct(true)}>
                     <td>{product.name}</td>
                     <td>${product.price}</td>
                     <td>{product.description}</td>
                     <td>
-                      <button>Edit</button>
-                      <button>Delete</button>
+                      <button className="delete-btn">Delete</button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+
         </div>
       </div>
+      {createProduct && <CreatePopup setCreateProduct={setCreateProduct} />}
+      {updateProduct && <UpdateProductPopup setUpdateProduct={setUpdateProduct} />}
+
     </div>
   );
 };

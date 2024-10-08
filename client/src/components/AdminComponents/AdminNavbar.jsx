@@ -12,10 +12,11 @@ const AdminNavbar = () => {
         <Link to="/admin" className="active">
           Dashboard
         </Link>
-        <Link to="/admin/feedback-rating">Feedback</Link>
-        <Link to="/admin/revenue-report">Reports</Link>
         <Link to="/admin/users">Users</Link>
         <Link to="/admin/product">Products</Link>
+      
+        <Link to="/admin/revenue-report">Reports</Link>
+        <Link to="/admin/feedback-rating">Feedback</Link>
         <Link to="/">Logout</Link>
       </div>
     </nav>
