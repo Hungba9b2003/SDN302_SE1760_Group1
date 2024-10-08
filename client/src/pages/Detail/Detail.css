@@ -1,0 +1,65 @@
+.container {
+  margin: 2rem;
+}
+
+.row-detail {
+  display: flex;
+  flex-wrap: wrap; /* Cho phép các phần tử trong hàng có thể xuống dòng khi không đủ chỗ */
+  justify-content: space-between;
+}
+
+.left-detail {
+  flex: 1;
+  min-width: 300px; /* Đặt độ rộng tối thiểu cho phần hình ảnh */
+  margin-right: 2rem; /* Khoảng cách bên phải giữa hình ảnh và thông tin món ăn */
+}
+
+.right-detail {
+  flex: 2;
+}
+
+.img-fluid {
+  max-width: 100%;
+  height: auto; /* Đảm bảo hình ảnh co dãn theo chiều rộng của phần tử cha */
+  border-radius: 8px; /* Bo tròn góc hình ảnh */
+}
+
+.detail-down {
+  margin-top: 2rem;
+  border-top: 1px solid #ccc; /* Thêm đường viền trên để phân tách phần mô tả chi tiết */
+  padding-top: 1rem; /* Thêm khoảng cách trên cho phần mô tả */
+}
+
+.text-muted {
+  color: #6c757d; /* Màu chữ nhạt */
+}
+
+.text-danger {
+  color: #dc3545; /* Màu chữ đỏ cho giá */
+}
+
+.badge {
+  font-size: 0.9rem; /* Kích thước chữ trong badge */
+}
+
+.button {
+  margin-top: 1rem; /* Khoảng cách giữa nút và các phần tử khác */
+  padding: 5px;
+  background: #ff4c24;
+  border-radius: 10px;
+  color: #fffbfb;
+  border: 2px solid #ff4c24;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .row-detail {
+    flex-direction: column; /* Chuyển sang hướng cột trên thiết bị di động */
+    align-items: center; /* Căn giữa các phần tử */
+  }
+
+  .right-detail {
+    margin-right: 0; /* Bỏ khoảng cách bên phải trên thiết bị di động */
+    margin-bottom: 1rem; /* Thêm khoảng cách dưới cho phần hình ảnh */
+  }
+}

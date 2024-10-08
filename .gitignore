@@ -2,10 +2,18 @@
 node_modules/
 client/node_modules/
 server/node_modules/
-
+server/mydatabase.js
 # Bỏ qua thư mục build ở client (nếu có)
 client/build/
 
 # Bỏ qua các file tạm thời khác
+<<<<<<< HEAD
 .env
 server/logs/
+=======
+client/.env
+server/.env
+client/package-lock.json
+server/package-lock.json
+server/logs/
+>>>>>>> PhongTHHE171494
