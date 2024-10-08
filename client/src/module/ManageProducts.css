@@ -111,10 +111,11 @@
 }
 .create{
     display: flex;
-    justify-content: end;
-    align-items: end;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
+
 
 .create button:hover {
     background: #fff4f2;

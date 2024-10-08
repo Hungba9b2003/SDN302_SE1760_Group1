@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './CreateProductPopup.css'
+import '../../module/CreateProductPopup.css'
 import { assets } from '../../assets/assets'
 import PropTypes from 'prop-types';
 

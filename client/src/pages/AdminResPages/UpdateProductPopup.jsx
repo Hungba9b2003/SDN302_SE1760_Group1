@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './UpdateProductPopup.css'
+import '../../module/UpdateProductPopup.css'
 import { assets } from '../../assets/assets'
 import PropTypes from 'prop-types';
 const UpdateProductPopup = ({ setUpdateProduct }) => {
