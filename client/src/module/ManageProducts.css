@@ -9,8 +9,6 @@
 }
 
 .manage-items-title {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr 0.5fr;
     align-items: center;
     color: grey;
     font-size: max(1vw, 12px);
@@ -20,18 +18,19 @@
     margin: 10px 0px;
     color: black;
 }
+.manage-items-item p{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 .manage-items-item img {
-    width: 50px;
+    width: 70px;
+    max-width: 100%;
+    height: auto;
 }
 
-.manage-items-item div {
-    max-width: 40px;
-    text-align: center;
-    border: 1px solid #EBEBEB;
-    padding: 8px 8px;
-    font-size: 12px;
-}
+
 .manage-items-remove-icon{
     cursor: pointer;
 }
@@ -112,10 +111,11 @@
 }
 .create{
     display: flex;
-    justify-content: end;
-    align-items: end;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
+
 
 .create button:hover {
     background: #fff4f2;
