@@ -1,4 +1,4 @@
-.create-popup{
+.update-popup{
     position: absolute;
     z-index: 1;
     width: 100%;
@@ -6,9 +6,9 @@
     background-color: #00000090;
     display: grid;
 }
-.create-popup-container{
+.update-popup-container{
     place-self: center;
-    width: max(23vw,400px);
+    width: max(23vw,500px);
     color: #808080;
     background-color: white;
     display: flex;
@@ -19,28 +19,35 @@
     font-size: 14px;
     animation: fadeIn 0.5s;
 }
-.create-popup-title{
+.update-popup-title{
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: black;
 }
-.create-popup-title img{
+.update-popup-title img{
     width: 16px;
     cursor: pointer;
 }
-.create-popup-inputs{
+.update-popup-inputs{
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
-.create-popup-inputs input{
+.update-popup-inputs input{
     outline: none;
     border: 1px solid #C9C9C9;
     padding: 10px;
     border-radius: 4px;
 }
-.create-popup-container button{
+.form-select{
+    outline: none;
+    border: 1px solid #C9C9C9;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+.update-popup-container button{
     border: none;
     padding: 10px;
     border-radius: 4px;
@@ -49,19 +56,29 @@
     font-size: 15px;
     cursor: pointer;
 }
-.create-popup-condition{
+.update-popup-condition{
     display: flex;
     align-items: start;
     gap: 8px;
     margin-top: -15px;
 }
 
-.create-popup-condition input{
+.update-popup-condition input{
     margin-top: 5px;
 }
 
+.form-check-inline {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
 
-.create-popup p span{
+.radio-group {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.update-popup p span{
     color: #FF4C24;
     font-weight: 500;
     cursor: pointer;
