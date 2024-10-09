@@ -20,7 +20,6 @@ import AdminFeedbackRating from "./pages/AdminPages/AdminFeedbackRating";
 import AdminProduct from "./pages/AdminPages/AdminProduct";
 import Detail from "./pages/Detail/Detail";
 import StoreContextProvider from "./Context/StoreContext";
-import "./index.css";
 
 const App = () => {
   const location = useLocation();
