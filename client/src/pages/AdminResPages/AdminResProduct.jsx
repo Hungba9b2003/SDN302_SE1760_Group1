@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../../module/admin.css'; 
+import '../../module/adminRes.css'; 
 import '../../module/ManageProducts.css';
 import '../../module/CreateProductPopup.css';
 import '../../module/UpdateProductPopup.css';

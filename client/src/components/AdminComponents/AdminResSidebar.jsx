@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../module/admin.css';
+import '../../module/adminRes.css';
 
 const AdminResSidebar = () => {
   return (
