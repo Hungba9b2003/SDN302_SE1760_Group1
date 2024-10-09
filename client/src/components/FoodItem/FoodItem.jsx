@@ -98,7 +98,7 @@ const FoodItem = ({ image, name, price, desc, id }) => {
           toggleWishlist();
         }} // Ngăn chặn sự kiện click lan truyền
       >
-        {isWishlisted ? "Wishlisted" : "Add to Wishlist"}
+        {isWishlisted ? "Wishlisted" : "Wishlist"}
       </button>
       {/* Button to toggle comment box */}
       <button
@@ -108,7 +108,7 @@ const FoodItem = ({ image, name, price, desc, id }) => {
           toggleCommentBox();
         }}
       >
-        {showCommentBox ? "Cancel" : "Add Comment"}
+        {showCommentBox ? "Cancel" : "Comment"}
       </button>
       {/* Comment input box */}
       {showCommentBox && (

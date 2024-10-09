@@ -10,8 +10,6 @@ function BoxWrapper({ children }) {
 }
 
 export default function DashboardStatsGrid() {
-  console.log("DashboardStatsGrid");
-
   return (
     <div className="flex gap-4">
       <BoxWrapper>
