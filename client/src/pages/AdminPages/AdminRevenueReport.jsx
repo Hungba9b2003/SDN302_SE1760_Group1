@@ -1,18 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import '../../module/admin.css';
-import AdminNavbar from '../../components/AdminComponents/AdminNavbar';
-import AdminSidebar from '../../components/AdminComponents/AdminSidebar';
+import React, { useState, useEffect } from "react";
+import "../../module/admin.css";
+import AdminNavbar from "../../components/AdminComponents/AdminNavbar";
+import AdminSidebar from "../../components/AdminComponents/AdminSidebar";
 
 const AdminRevenueReport = () => {
-  const [revenueReport, setRevenueReport] = useState([]);
-
-  useEffect(() => {
-    // Giả sử bạn sẽ gọi API từ backend để lấy dữ liệu báo cáo tài chính
-    fetch('/api/admin/revenue-report')
-      .then(response => response.json())
-      .then(data => setRevenueReport(data))
-      .catch(error => console.error('Error fetching revenue report:', error));
-  }, []);
+  const [revenueReport, setRevenueReport] = useState([
+    {
+      month: "January 2024",
+      totalRevenue: 100000,
+      topProduct: "Pizza Hut (Main St)",
+      topProductRevenue: 25000,
+    },
+    {
+      month: "February 2024",
+      totalRevenue: 125000,
+      topProduct: "Sushi Paradise",
+      topProductRevenue: 30000,
+    },
+    {
+      month: "March 2024",
+      totalRevenue: 90000,
+      topProduct: "Burger King (Central)",
+      topProductRevenue: 22000,
+    },
+  ]);
 
   return (
     <div className="admin-container">
@@ -22,7 +33,7 @@ const AdminRevenueReport = () => {
         <div className="admin-main">
           <h1>Revenue Report</h1>
           <div className="revenue-report">
-          <table className="table revenue-table">
+            <table className="table revenue-table">
               <thead>
                 <tr>
                   <th>Month</th>
