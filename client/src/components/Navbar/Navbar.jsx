@@ -34,25 +34,12 @@ const Navbar = ({ setShowLogin }) => {
             >
               menu
             </a>
-            <a
-              href="#app-download"
-              onClick={() => setMenu("mob-app")}
-              className={`${menu === "mob-app" ? "active" : ""}`}
-            >
-              mobile app
-            </a>
-            <a
-              href="#footer"
-              onClick={() => setMenu("contact")}
-              className={`${menu === "contact" ? "active" : ""}`}
-            >
-              contact us
-            </a>
+
             <Link
-              to="/manage"
+              to="/adminres/dashboard"
               className={`${menu === "manage" ? "active" : ""}`}
             >
-              manage product
+              restaurant
             </Link>
           </ul>
           <div className="navbar-right">
