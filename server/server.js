@@ -3,40 +3,45 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
-const connectDB = require("./db");
+const connectDB = require("./config/database");
+const connectDB1 = require("./config/mydatabase");
+const authRoutes = require("./routes/authRouter");
 const app = express();
+const morgan = require("morgan");
+app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
-
 const Account = require("./models/Account");
-connectDB();
+const session = require("express-session");
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
+// connectDB();
+connectDB1();
+app.use(
+  session({
+    secret: "your_secret_key", // Thay thế bằng khóa bí mật của bạn
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // Đặt true khi bạn chạy trên HTTPS
+  })
+);
+// Hàm xóa các token hết hạn
+// const clearExpiredTokens = async () => {
+//   const expiredDate = new Date(Date.now() - 10000);
+//   const result = await Account.updateMany(
+//     { token: { $ne: "" }, loginAt: { $lt: expiredDate } },
+//     { $set: { token: "" } }
+//   );
+//   console.log(`${result.modifiedCount} token(s) cleared.`);
+// };
 
-app.post("/register", async (req, res) => {
-  const { username, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const newAccount = new Account({ username, password: hashedPassword });
-  await newAccount.save();
+// setInterval(clearExpiredTokens, 10000);
 
-  res.status(201).send("User registered");
-});
+app.use("/api/auth", authRoutes);
 
-app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-
-  const account = await Account.findOne({ username });
-
-  if (!account) return res.status(400).send("User not found");
-
-  const isMatch = await bcrypt.compare(password, account.password);
-  if (!isMatch) return res.status(400).send("Invalid credentials");
-
-  const token = jwt.sign({ username: account.username }, "secret_key", {
-    expiresIn: "1h",
-  });
-
-  res.json({ token });
-});
-
-app.listen(5000, () => {
-  console.log("Server running on http://localhost:5000");
+const dotenv = require("dotenv");
+dotenv.config();
+const PORT = process.env.PORT || 6969;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
