@@ -9,7 +9,6 @@ const Navbar = ({ setShowLogin }) => {
   const { getTotalCartAmount } = useContext(StoreContext);
   const location = useLocation();
   return (
-<<<<<<< HEAD
     <div className="navbar" style={{ padding: "20px 8vw" }}>
       <Link to="/">
         <img className="logo" src={assets.logo} alt="" />
@@ -17,22 +16,6 @@ const Navbar = ({ setShowLogin }) => {
       {location.pathname.includes("/authentication") ? (
         <Link to="#" className="navbar-search-icon">
           <a style={{ color: "#ee4d2d" }}>Bạn cần sự trợ giúp ?</a>
-=======
-    <div className='navbar'>
-      <Link to='/'><img className='logo' src={assets.logo} alt="" /></Link>
-      <ul className="navbar-menu">
-        <Link to="/" onClick={()=>setMenu("home")} className={`${menu==="home"?"active":""}`}>home</Link>
-        <a href='#explore-menu' onClick={()=>setMenu("menu")} className={`${menu==="menu"?"active":""}`}>menu</a>
-        <a href='#app-download' onClick={()=>setMenu("mob-app")} className={`${menu==="mob-app"?"active":""}`}>mobile app</a>
-        <a href='#footer' onClick={()=>setMenu("contact")} className={`${menu==="contact"?"active":""}`}>contact us</a>
-        <Link to='/adminres/manage' className={`${menu==="adminres"?"active":""}`}>manage product</Link>
-      </ul>
-      <div className="navbar-right">
-        <img src={assets.search_icon} alt="" />
-        <Link to='/cart' className='navbar-search-icon'>
-          <img src={assets.basket_icon} alt="" />
-          <div className={getTotalCartAmount()>0?"dot":""}></div>
->>>>>>> hoanlq
         </Link>
       ) : (
         <>

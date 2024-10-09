@@ -9,9 +9,6 @@ import MyOrders from "./pages/MyOrders/MyOrders";
 import Login from "./pages/Authentication/Login";
 import ForgetPassword from "./pages/Authentication/ForgetPassword";
 import Register from "./pages/Authentication/Register";
-import CreateProductPopup from "./pages/ManageProducts/CreateProductPopup";
-import ManageProducts from "./pages/ManageProducts/ManageProducts";
-import UpdateProductPopup from "./pages/ManageProducts/UpdateProductPopup";
 import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./components/AdminComponents/AdminDashboard";
 import AdminRevenueReport from "./pages/AdminPages/AdminRevenueReport";
@@ -20,12 +17,15 @@ import AdminFeedbackRating from "./pages/AdminPages/AdminFeedbackRating";
 import AdminProduct from "./pages/AdminPages/AdminProduct";
 import Detail from "./pages/Detail/Detail";
 import "bootstrap/dist/css/bootstrap.min.css";
-import StoreContextProvider from "./Context/StoreContext";
-import OrderHistory from "./components/OrderHistory/OrderHistory";
+import CreateProductPopup from "./pages/AdminResPages/CreateProductPopup";
+import UpdateProductPopup from "./pages/AdminResPages/UpdateProductPopup";
+import "bootstrap/dist/css/bootstrap.min.css";
 import AdminResDashboard from "./components/AdminComponents/AdminResDashboard";
 import AdminResRevenueReport from "./pages/AdminResPages/AdminResRevenueReport";
 import AdminResFeedbackRating from "./pages/AdminResPages/AdminResFeedbackRating";
 import AdminResProduct from "./pages/AdminResPages/AdminResProduct";
+import StoreContextProvider from "./Context/StoreContext";
+import OrderHistory from "./components/OrderHistory/OrderHistory";
 import "./index.css";
 
 const App = () => {
@@ -70,15 +70,6 @@ const App = () => {
               />
               <Route path="/detail/:food_id" element={<Detail />} />
               <Route path="/order-history" element={<OrderHistory />} />
-              <Route
-                path="/manage"
-                element={
-                  <ManageProducts
-                    setCreateProduct={setCreateProduct}
-                    setUpdateProduct={setUpdateProduct}
-                  />
-                }
-              />
             </Routes>
             <Route path="/adminres/dashboard" element={<AdminResDashboard />} />
             <Route
