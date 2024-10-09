@@ -1,7 +1,7 @@
 import React from 'react';
 import AdminNavbar from '../../components/AdminComponents/AdminResNavbar';
 import AdminSidebar from '../../components/AdminComponents/AdminResSidebar';
-import '../../module/admin.css';
+import '../../module/adminRes.css';
 
 const AdminResHome = () => {
   return (

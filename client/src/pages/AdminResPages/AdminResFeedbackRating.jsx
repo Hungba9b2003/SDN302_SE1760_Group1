@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AdminResNavbar from '../../components/AdminComponents/AdminResNavbar';
 import AdminResSidebar from '../../components/AdminComponents/AdminResSidebar';
-import '../../module/admin.css';
+import '../../module/adminRes.css';
 
 const AdminResFeedbackRating = () => {
   const [feedbacks, setFeedbacks] = useState([]);
