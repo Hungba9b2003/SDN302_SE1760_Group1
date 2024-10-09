@@ -19,7 +19,9 @@ import AdminUsers from "./pages/AdminPages/AdminUser";
 import AdminFeedbackRating from "./pages/AdminPages/AdminFeedbackRating";
 import AdminProduct from "./pages/AdminPages/AdminProduct";
 import Detail from "./pages/Detail/Detail";
+import "bootstrap/dist/css/bootstrap.min.css";
 import StoreContextProvider from "./Context/StoreContext";
+import OrderHistory from "./components/OrderHistory/OrderHistory";
 import "./index.css";
 
 const App = () => {
@@ -36,7 +38,7 @@ const App = () => {
       {updateProduct ? (
         <UpdateProductPopup setUpdateProduct={setUpdateProduct} />
       ) : null}
-      <div className="app">
+      <div className={location.pathname !== "/order-history" ? "app" : ""}>
         <>
           <StoreContextProvider>
             <Routes>
@@ -63,6 +65,7 @@ const App = () => {
                 element={<AdminFeedbackRating />}
               />
               <Route path="/detail/:food_id" element={<Detail />} />
+              <Route path="/order-history" element={<OrderHistory />} />
               <Route
                 path="/manage"
                 element={
