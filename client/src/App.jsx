@@ -26,6 +26,7 @@ import AdminResFeedbackRating from "./pages/AdminResPages/AdminResFeedbackRating
 import AdminResProduct from "./pages/AdminResPages/AdminResProduct";
 import StoreContextProvider from "./Context/StoreContext";
 import OrderHistory from "./components/OrderHistory/OrderHistory";
+
 import "./index.css";
 
 const App = () => {
@@ -70,25 +71,28 @@ const App = () => {
               />
               <Route path="/detail/:food_id" element={<Detail />} />
               <Route path="/order-history" element={<OrderHistory />} />
+              <Route
+                path="/adminres/dashboard"
+                element={<AdminResDashboard />}
+              />
+              <Route
+                path="/adminres/revenue-report"
+                element={<AdminResRevenueReport />}
+              />
+              <Route
+                path="/adminres/manage"
+                element={
+                  <AdminResProduct
+                    setCreateProduct={setCreateProduct}
+                    setUpdateProduct={setUpdateProduct}
+                  />
+                }
+              />
+              <Route
+                path="/adminres/feedback-rating"
+                element={<AdminResFeedbackRating />}
+              />
             </Routes>
-            <Route path="/adminres/dashboard" element={<AdminResDashboard />} />
-            <Route
-              path="/adminres/revenue-report"
-              element={<AdminResRevenueReport />}
-            />
-            <Route
-              path="/adminres/manage"
-              element={
-                <AdminResProduct
-                  setCreateProduct={setCreateProduct}
-                  setUpdateProduct={setUpdateProduct}
-                />
-              }
-            />
-            <Route
-              path="/adminres/feedback-rating"
-              element={<AdminResFeedbackRating />}
-            />
           </StoreContextProvider>
         </>
       </div>

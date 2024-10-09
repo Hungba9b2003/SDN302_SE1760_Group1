@@ -36,10 +36,10 @@ const Navbar = ({ setShowLogin }) => {
             </a>
 
             <Link
-              to="/manage"
+              to="/adminres/dashboard"
               className={`${menu === "manage" ? "active" : ""}`}
             >
-              manage product
+              restaurant
             </Link>
           </ul>
           <div className="navbar-right">
