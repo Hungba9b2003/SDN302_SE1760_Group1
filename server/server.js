@@ -6,6 +6,7 @@ const cors = require("cors");
 const connectDB = require("./config/database");
 const connectDB1 = require("./config/mydatabase");
 const authRoutes = require("./routes/authRouter");
+const detailRouter = require("./routes/detailRouter");
 const app = express();
 const morgan = require("morgan");
 app.use(morgan("dev"));
@@ -14,6 +15,7 @@ app.use(cors());
 const Account = require("./models/Account");
 const session = require("express-session");
 const bodyParser = require("body-parser");
+
 app.use(bodyParser.json());
 // connectDB();
 connectDB1();
@@ -36,8 +38,9 @@ app.use(
 // };
 
 // setInterval(clearExpiredTokens, 10000);
-
+// Định nghĩa các route
 app.use("/api/auth", authRoutes);
+app.use("/api/details", detailRouter);
 
 const dotenv = require("dotenv");
 dotenv.config();
