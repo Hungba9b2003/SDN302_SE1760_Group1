@@ -44,6 +44,14 @@ const Detail = () => {
           >
             Thêm vào giỏ hàng
           </Button>
+          <Button
+            className="button"
+            variant="primary"
+            size="lg"
+            onClick={() => addToCart(foodItem.food_id)} // Thêm chức năng thêm vào giỏ hàng
+          >
+            Buy now
+          </Button>
         </div>
       </div>
 

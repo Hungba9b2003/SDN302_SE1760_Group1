@@ -16,17 +16,14 @@ import AdminUsers from "./pages/AdminPages/AdminUser";
 import AdminFeedbackRating from "./pages/AdminPages/AdminFeedbackRating";
 import AdminProduct from "./pages/AdminPages/AdminProduct";
 import Detail from "./pages/Detail/Detail";
-import "bootstrap/dist/css/bootstrap.min.css";
 import CreateProductPopup from "./pages/AdminResPages/CreateProductPopup";
 import UpdateProductPopup from "./pages/AdminResPages/UpdateProductPopup";
-import "bootstrap/dist/css/bootstrap.min.css";
 import AdminResDashboard from "./components/AdminComponents/AdminResDashboard";
 import AdminResRevenueReport from "./pages/AdminResPages/AdminResRevenueReport";
 import AdminResFeedbackRating from "./pages/AdminResPages/AdminResFeedbackRating";
 import AdminResProduct from "./pages/AdminResPages/AdminResProduct";
 import StoreContextProvider from "./Context/StoreContext";
 import OrderHistory from "./components/OrderHistory/OrderHistory";
-
 import "./index.css";
 
 const App = () => {
