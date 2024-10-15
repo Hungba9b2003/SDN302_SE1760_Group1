@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Detail = require("../models/Detail"); // Đảm bảo đường dẫn này trỏ đúng đến nơi lưu trữ model Detail
+const Detail = require("../models/Detail");
 const detailRouter = express.Router();
 
 // Route: Lấy tất cả các chi tiết
