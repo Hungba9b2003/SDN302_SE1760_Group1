@@ -1,30 +1,52 @@
 const mongoose = require("mongoose");
-
+const validator = require("validator");
 const AccountSchema = new mongoose.Schema(
   {
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-      minlength: 6,
-      maxlength: 20,
-    },
     password: {
       type: String,
-      required: true,
+      required: [true, "Password is required"],
+      validate: {
+        validator: (v) =>
+          validator.isStrongPassword(v, {
+            minLength: 8,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 1,
+          }),
+        errorInfo: {
+          code: "IPassword",
+          message:
+            "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character",
+        },
+      },
     },
     email: {
-      type: String,
       unique: true,
+      type: String,
       validate: {
-        validator: (v) => /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/,
-        message: "Email is not valid",
+        validator: (v) => validator.isEmail(v),
+        errorInfo: {
+          code: "IEmail",
+          message: "Email is not valid",
+        },
+      },
+    },
+    status: {
+      type: String,
+      enum: {
+        values: ["Active", "Inactive"],
       },
     },
     role: {
       type: String,
-      enum: ["guest", "admin", "customer", "restaurant"],
-      default: "guest",
+      enum: {
+        values: ["Admin", "Customer", "Restaurant"],
+        errorInfo: {
+          code: "IRole",
+          message: "Email is not valid",
+        },
+      },
     },
     createAt: {
       type: Date,
@@ -32,11 +54,10 @@ const AccountSchema = new mongoose.Schema(
     },
     updateAt: Date,
     lastLogin: Date,
-    profile: String,
-    token: String,
   },
   {
-    collection: "Account", // Tên collection trong MongoDB
+    collection: "Account",
+    strict: false, // Cho phép thêm các trường không định nghĩa
   }
 );
 
