@@ -3,12 +3,13 @@ const mongoose = require("mongoose");
 const Category = require("../models/Category");
 const Acount = require("../models/Account");
 const Customer = require("../models/Customer");
-const Detail = require("../models/Detail");
+const Detail = require("../models/Dish");
 const Order = require("../models/Order");
 const Payment = require("../models/Payment");
 const Report = require("../models/Report");
 const Restaurant = require("../models/Restaurant");
 const Review = require("../models/Review");
+const Product = require("../models/Food");
 
 const Db = {}; // doi tuong dai dien cho DB gom co cac thuoc tinh {Entity object} và phương thưc kết nối CSDL
 
@@ -21,6 +22,7 @@ Db.Payment = Payment;
 Db.Report = Report;
 Db.Restaurant = Restaurant;
 Db.Review = Review;
+Db.Product = Product;
 
 // ket noi csdl
 Db.connectDB = async () => {

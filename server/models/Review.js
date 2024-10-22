@@ -33,7 +33,7 @@ const ReviewSchema = new mongoose.Schema(
     },
   },
   {
-    collection: "Reviews",
+    collection: "Review",
     timestamps: true, // Thêm trường createdAt và updatedAt
   }
 );

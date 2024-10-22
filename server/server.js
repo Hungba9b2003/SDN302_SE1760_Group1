@@ -70,5 +70,5 @@ const port = process.env.PORT_NUMBER || 6969;
 const hostname = process.env.HOST_NAME;
 app.listen(port, hostname, () => {
   console.log(`Server running at: http://${hostname}:${port}`);
-  Db.connectDB();
+  connectDB();
 });

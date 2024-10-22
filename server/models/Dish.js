@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const DetailSchema = new mongoose.Schema(
+const DishSchema = new mongoose.Schema(
   {
     _id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -49,11 +49,11 @@ const DetailSchema = new mongoose.Schema(
     },
   },
   {
-    collection: "Detail", // Tên collection trong MongoDB
+    collection: "Dish", // Tên collection trong MongoDB
     timestamps: true, // Thêm trường createdAt và updatedAt tự động
   }
 );
 
-const Detail = mongoose.model("Detail", DetailSchema);
+const Dish = mongoose.model("dish", DishSchema);
 
-module.exports = Detail;
+module.exports = Dish;

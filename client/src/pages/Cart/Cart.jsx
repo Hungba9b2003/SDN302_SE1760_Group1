@@ -4,8 +4,13 @@ import { StoreContext } from "../../Context/StoreContext";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const { cartItems, food_list, removeFromCart, getTotalCartAmount } =
-    useContext(StoreContext);
+  const {
+    cartItems,
+    food_list,
+    removeFromCart,
+    getTotalCartAmount,
+    foodListAPI,
+  } = useContext(StoreContext);
   const navigate = useNavigate();
 
   return (
@@ -17,7 +22,7 @@ const Cart = () => {
         </div>
         <br />
         <hr />
-        {food_list.map((item, index) => {
+        {foodListAPI.map((item, index) => {
           if (cartItems[item.food_id] > 0) {
             return (
               <div key={index}>

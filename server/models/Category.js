@@ -2,7 +2,11 @@ const mongoose = require("mongoose");
 
 const CategorySchema = new mongoose.Schema(
   {
-    parentCategory: {
+    menu_name: {
+      type: String,
+      required: true,
+    },
+    menu_image: {
       type: String,
       required: true,
     },

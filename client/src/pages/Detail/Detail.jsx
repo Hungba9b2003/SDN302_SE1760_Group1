@@ -6,10 +6,10 @@ import { Container, Row, Col, Button, Badge } from "react-bootstrap";
 import "./Detail.css";
 const Detail = () => {
   const { food_id } = useParams(); // Lấy ID món ăn từ URL
-  const { food_list, addToCart } = useContext(StoreContext); // Lấy addToCart từ StoreContext
+  const { food_list, addToCart, foodListAPI } = useContext(StoreContext); // Lấy addToCart từ StoreContext
 
   // Tìm món ăn dựa trên ID
-  const foodItem = food_list.find((item) => item.food_id == food_id);
+  const foodItem = foodListAPI.find((item) => item.food_id == food_id);
 
   // Kiểm tra nếu không tìm thấy món ăn
   if (!foodItem) {

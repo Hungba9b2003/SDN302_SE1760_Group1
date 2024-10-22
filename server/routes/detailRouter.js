@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Detail = require("../models/Detail");
+const Detail = require("../models/Dish");
 const detailRouter = express.Router();
 
 // Route: Lấy tất cả các chi tiết
