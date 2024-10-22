@@ -4,7 +4,7 @@ import FoodItem from "../FoodItem/FoodItem";
 import { StoreContext } from "../../Context/StoreContext";
 
 const FoodDisplay = ({ category }) => {
-  const { food_list, foodListAPI } = useContext(StoreContext);
+  const { foodListAPI } = useContext(StoreContext);
 
   return (
     <div className="food-display" id="food-display">
