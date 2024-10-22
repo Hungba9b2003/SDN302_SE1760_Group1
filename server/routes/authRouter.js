@@ -1,30 +1,20 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const upload = multer();
 const {
-  register,
+  checkEmail,
   login,
-  sendSMS,
   sendOtp,
+  register,
   verifyOtp,
-} = require("../controller/authController");
-const { body } = require("express-validator");
+} = require("../controller/authController"); // Ensure this path is correct
 
-router.post(
-  "/register",
-  [
-    body("username"),
-    body("password")
-      .isLength({ min: 6 })
-      .withMessage("Password must be at least 6 characters long"),
-  ],
-  register
-);
-
+// Define your routes
 router.post("/login", login);
+router.post("/send-otp", sendOtp);
+router.post("/verify-otp", verifyOtp);
+router.post("/register", upload.none(), register);
+router.post("/check-email", checkEmail);
 
-router.post("/sendSMS", sendSMS);
-
-router.post("/sendOtp", sendOtp);
-
-router.post("/verifyOtp", verifyOtp);
 module.exports = router;

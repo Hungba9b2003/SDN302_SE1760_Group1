@@ -7,6 +7,7 @@ import { assets } from "../../assets/assets";
 import axios from "axios";
 import OtpInput from "react-otp-input";
 
+
 const ForgetPassword = () => {
   const navigate = useNavigate();
   const [currState, setCurrState] = useState("forgetPassword");

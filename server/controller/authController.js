@@ -1,9 +1,13 @@
 const Account = require("../models/Account");
+const Customer = require("../models/Customer");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const nodemailer = require("nodemailer");
+const mongoose = require("mongoose");
 const session = require("express-session");
+const { default: isEmail } = require("validator/lib/isEmail");
+
 dotenv.config();
 
 let transporter = nodemailer.createTransport({
@@ -16,46 +20,7 @@ let transporter = nodemailer.createTransport({
     pass: "nepb skbc pikd sugs",
   },
 });
-exports.sendOtp = (req, res) => {
-  const { email } = req.body; // Lấy email từ body của request
-  console.log("Email:", email); // Ghi lại giá trị email
 
-  // Kiểm tra tính hợp lệ của email
-  if (!email || typeof email !== "string" || email.trim() === "") {
-    return res.status(400).send("Invalid email address");
-  }
-
-  const otp = Math.floor(100000 + Math.random() * 900000); // Tạo mã OTP 6 chữ số
-
-  let mailOptions = {
-    from: "phamthuy091984@gmail.com",
-    to: email,
-    subject: "OTP Verification",
-    text: `Your OTP code is ${otp}`,
-  };
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error("Error sending email:", error);
-      return res.status(500).send("Error sending OTP");
-    } else {
-      console.log("Email sent:", info.response);
-      req.session.otp = otp;
-      req.session.email = email;
-      return res.status(200).send({ message: "OTP sent successfully", otp });
-    }
-  });
-};
-
-exports.verifyOtp = (req, res) => {
-  const { enteredOtp } = req.body;
-  const sentOtp = req.session.otp;
-  if (enteredOtp === sentOtp) {
-    return res.status(200).send({ message: "OTP verified successfully" });
-  } else {
-    return res.status(400).send({ message: "Invalid OTP" });
-  }
-};
 exports.login = async (req, res) => {
   const { username, password } = req.body;
 
@@ -73,7 +38,7 @@ exports.login = async (req, res) => {
     const token = jwt.sign(
       { id: account.id, role: account.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "1m" }
     );
 
     account.token = token;
@@ -85,68 +50,208 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-exports.sendSMS = async (req, res) => {
-  const apiUrl = "https://api.esms.vn/main/sms/send";
-  const apiKey = "1D45C4CFDE2EAFD24FE2A5C6359752";
-  const secretKey = "9C49AC2860184B7D4C1B219ECB0BD6";
-
-  const { phone, content } = req.body;
-
-  if (!phone || !content) {
-    return res
-      .status(400)
-      .json({ error: "Phone number and content are required." });
+exports.sendOtp = async (req, res) => {
+  const { email, role, oldEmail } = req.body;
+  console.log("Email:", email);
+  if (!email || typeof email !== "string" || email.trim() === "") {
+    return res.status(400).send("Invalid email address");
   }
 
-  const data = {
-    phone: phone,
-    content: content,
-    apiKey: apiKey,
-    secretKey: secretKey,
+  const otp = Math.floor(100000 + Math.random() * 900000); // Tạo mã OTP 6 chữ số
+
+  let mailOptions = {
+    from: "phamthuy091984@gmail.com",
+    to: email,
+    subject: "OTP Verification",
+    text: `Your OTP code is ${otp}`,
   };
+  await Account.findOneAndUpdate(
+    { email: oldEmail ? oldEmail : email },
+    {
+      email: email,
+      password: "Abac12345678@!",
+      role: role,
+      updateAt: new Date().toISOString(),
+      otp: otp,
+      lastLogin: null,
+    },
+    {
+      new: true,
+      upsert: true,
+    }
+  );
 
+  setTimeout(async () => {
+    try {
+      await Account.updateOne({ email: email }, { otp: null });
+    } catch (error) {
+      console.error("Error removing OTP:", error);
+    }
+  }, 600000);
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error("Error sending email:", error);
+      return res.status(500).send("Error sending OTP");
+    } else {
+      console.log("Email sent:", info.response);
+      req.session.otp = otp;
+      req.session.email = email;
+      return res.status(200).send({ message: "OTP sent successfully", otp });
+    }
+  });
+};
+
+exports.checkEmail = async (req, res) => {
+  const { email } = req.body;
+  console.log("Email:", email);
+  let account = new Account({
+    email: email,
+    password: "Abac12345678@!",
+    role: "Customer",
+    updateAt: new Date().toISOString(),
+    otp: null,
+    lastLogin: null,
+  });
+  const errors = [];
+  const accountErrors = account.validateSync();
+  if (accountErrors) {
+    errors.push(
+      ...Object.values(accountErrors.errors).map(
+        (err) => err.properties.errorInfo
+      )
+    );
+  }
   try {
-    const response = await axios.post(apiUrl, data);
-    console.log("SMS sent successfully:", response.data);
-    return res
-      .status(200)
-      .json({ message: "SMS sent successfully.", data: response.data });
+    const checkExist = await Account.findOne({ email: email });
+    if (checkExist && checkExist.status != null) {
+      return res.status(400).send({ message: "Email already exists" });
+    }
+    if (errors.length > 0) {
+      return res.status(400).send({ message: "Email is invalid" });
+    } else {
+      return res.status(200).send({ message: "Email is available" });
+    }
   } catch (error) {
-    console.error("Error sending SMS:", error.response.data);
+    return res.status(500).send({ message: "Error" });
+  }
+};
 
-    // Trả về lỗi cho client
-    return res
-      .status(500)
-      .json({ error: "Error sending SMS.", details: error.response.data });
+exports.verifyOtp = (req, res) => {
+  const { enteredOtp } = req.body;
+  const sentOtp = req.session.otp;
+  if (enteredOtp === sentOtp) {
+    return res.status(200).send({ message: "OTP verified successfully" });
+  } else {
+    return res.status(400).send({ message: "Invalid OTP" });
   }
 };
 
 exports.register = async (req, res) => {
-  const { username, password } = req.body;
+  // Sử dụng multer để lấy dữ liệu từ req.body
 
-  console.log("register", username, password);
+  console.log("Received body:", req.body); // Kiểm tra dữ liệu nhận được
+  const { role } = req.body;
+  if (role === "Customer") {
+    const { email, password, name, phone, otp } = req.body;
+    try {
+      const errors = [];
+      if (email == null || password == null || name == null || phone == null) {
+        errors.push({
+          code: "IBlank",
+          message: "There are fields left blank.",
+        });
+      }
+      const customer = new Customer({
+        name: name,
+        phone: phone,
+      });
+      const account = new Account({
+        email: email,
+        name: name,
+        password: password,
+        role: role,
+        phone: phone,
+        updateAt: new Date().toISOString(),
+        lastLogin: null,
+      });
 
-  if (!username || !password) {
-    return res
-      .status(400)
-      .json({ message: "Username and password are required" });
-  }
+      // Kiểm tra hợp lệ của account
+      const accountErrors = account.validateSync();
+      if (accountErrors) {
+        errors.push(
+          ...Object.values(accountErrors.errors).map(
+            (err) => err.properties.errorInfo
+          )
+        );
+      }
 
-  try {
-    let account = await Account.findOne({ username });
-    if (account) {
-      return res.status(400).json({ message: "Username already exists" });
+      // Kiểm tra hợp lệ của customer
+      const customerErrors = customer.validateSync();
+      if (customerErrors) {
+        errors.push(
+          ...Object.values(customerErrors.errors).map(
+            (err) => err.properties.errorInfo
+          )
+        );
+      }
+      if (await Customer.findOne({ phone: phone })) {
+        errors.push({
+          code: "IPhone",
+          message: "Phone number is already in use",
+        });
+      }
+
+      const accountCheck = await Account.findOne({ email: email });
+      if (otp != accountCheck.otp) {
+        errors.push({
+          code: "IOtp",
+          message: "OTP is incorrect !",
+        });
+      }
+
+      if (errors.length > 0) {
+        return res
+          .status(200)
+          .json({ errorType: "ValidationError", errorList: errors });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const account2 = await Account.findOneAndUpdate(
+        { email: email },
+        {
+          email: email,
+          name: name,
+          password: hashedPassword,
+          role: role,
+          phone: phone,
+          status: "Active",
+          updateAt: new Date().toISOString(),
+          lastLogin: null,
+        },
+        {
+          new: true,
+          upsert: true,
+        }
+      );
+      const customer2 = new Customer({
+        _id: account2._id,
+        name: name,
+        phone: phone,
+        updateAt: new Date().toISOString(),
+      });
+
+      await customer2.save();
+      res.status(201).json({ message: "Account registered successfully" });
+    } catch (error) {
+      res.status(500).json({ message: error.message || "Server error" });
+      console.error(error);
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    account = new Account({
-      username: username,
-      password: hashedPassword,
+  } else {
+    res.status(400).json({
+      errorType: "RoleFailed",
+      message: "Role must be either Admin, Customer, or Restaurant",
     });
-
-    await account.save();
-    res.status(201).json({ message: "Account registered successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message || "Server error" });
-    console.error(error);
   }
 };

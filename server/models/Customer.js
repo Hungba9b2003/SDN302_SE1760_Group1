@@ -1,14 +1,7 @@
 const mongoose = require("mongoose");
-
+const validator = require("validator");
 const CustomerSchema = new mongoose.Schema(
   {
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-      minlength: 6,
-      maxlength: 20,
-    },
     name: {
       type: String,
       required: true,
@@ -17,32 +10,38 @@ const CustomerSchema = new mongoose.Schema(
       type: String,
       unique: true,
       validate: {
-        validator: (v) => /^\+?[1-9]\d{1,14}$/.test(v),
-        message: "Phone number is not valid",
+        validator: (v) => validator.isMobilePhone(v),
+        errorInfo: {
+          code: "IPhone",
+          message: "Phone number is not valid",
+        },
       },
     },
-    address: {
-      type: String,
-      required: true,
-    },
+
     avatar: {
       type: String,
-    },
-    createAt: {
-      type: Date,
-      default: Date.now,
+      default: "/avatar/default",
     },
     updateAt: {
       type: Date,
       default: Date.now,
     },
     orders: {
-      type: [String],
+      type: [],
+      default: [],
+    },
+    cart: {
+      type: [],
+      default: [],
+    },
+    address: {
+      type: [],
       default: [],
     },
   },
   {
     collection: "Customer",
+    strict: false,
   }
 );
 

@@ -16,7 +16,7 @@
 }
 
 .navbar-menu {
-    
+    margin-bottom: -1rem;
     display: flex;
     list-style: none;
     gap: 20px;
