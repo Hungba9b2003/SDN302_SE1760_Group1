@@ -3,7 +3,6 @@
 .adminres-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
 }
 
 .adminres-navbar {
@@ -47,6 +46,7 @@
 
 .adminres-sidebar {
   width: 200px;
+  height: auto;
   background-color: #f4f4f4;
   padding: 15px;
 }
@@ -194,3 +194,5 @@
 h1 {
   margin-bottom: 20px;
 }
+
+

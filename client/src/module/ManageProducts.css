@@ -31,7 +31,18 @@
 }
 
 
+.table th {
+    background-color: #FF4C24;
+}
+
+
 .manage-items-remove-icon{
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.manage-items-update-icon{
+    margin-right: 10px;
     cursor: pointer;
 }
 .manage-bottom {
@@ -121,24 +132,211 @@
     background: #fff4f2;
 }
 
-.search input{
-    outline: none;
-    border: 1px solid #C9C9C9;
-    padding: 5px;
-    border-radius: 4px;
-    width: 100%;
+.search {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    position: relative;
 }
 
-.search-button button{
-    background: transparent;
+.search input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #C9C9C9;
+    border-radius: 15px;
+    outline: none;
+    padding-right: 40px;
+    transition: border-color 0.3s;
+}
+
+.search input:focus {
+    border-color: #FF4C24;
+}
+
+.sort-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.custom-select {
+    width: 100%;
+    max-width: 200px;
+    padding: 10px;
     font-size: 16px;
-    color: #ffffff;
-    background-color:#FF4C24 ;
-    border: 1px solid #FF4C24;
-    border-radius: 5px;
-    padding: 5px 30px;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    background-color: #fff;
+    color: #333;
+    appearance: none; /* Remove default browser styling */
     cursor: pointer;
-    transition: 0.3s;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  /* Add an arrow icon to the dropdown */
+  .custom-select::after {
+    content: '▼';
+    font-size: 12px;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  
+  /* Hover and focus effect */
+  .custom-select:hover {
+    border-color: #888;
+  }
+  
+  .custom-select:focus {
+    box-shadow: 0 0 5px #FF4C24;
+    border-color: #FF4C24;
+  }
+
+  
+
+  .card-container {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 250px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card-image img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 15px;
+    text-align: center;
+}
+
+.card-content h2 {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.card-content p {
+    color: #666;
+    font-size: 14px;
+    margin: 8px 0;
+}
+
+.card-content .price {
+    font-size: 16px;
+    color: #FF4C24;
+    font-weight: bold;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.card-actions button {
+    background-color: #FF4C24;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.card-actions button:hover {
+    background-color: #e6451e;
+}
+  
+
+/* Container */
+.row {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr); /* 12 cột */
+    gap: 10px; /* Khoảng cách giữa các cột */
+}
+
+.custom-col {
+    padding: 5px;
+}
+
+.custom-col-1 {
+    grid-column: span 1; /* 1 cột */
+}
+
+.custom-col-2 {
+    grid-column: span 2; /* 2 cột */
+}
+
+.custom-col-3 {
+    grid-column: span 3; /* 3 cột */
+}
+
+.custom-col-4 {
+    grid-column: span 4; /* 4 cột */
+}
+
+.custom-col-5 {
+    grid-column: span 5; /* 4 cột */
+}
+.custom-col-6 {
+    grid-column: span 6; /* 4 cột */
+}
+.custom-col-7 {
+    grid-column: span 7; /* 4 cột */
+}
+
+.custom-col-8 {
+    grid-column: span 8; /* 8 cột */
+}
+
+.custom-col-9 {
+    grid-column: span 9; /* 8 cột */
+}
+
+.custom-col-10 {
+    grid-column: span 10; /* 8 cột */
+}
+
+/* Responsive cho màn hình nhỏ hơn */
+@media (max-width: 750px) {
+    .row {
+        grid-template-columns: repeat(6, 1fr); /* Giảm số cột */
+    }
+
+    .custom-col-1 {
+        grid-column: span 6; /* Full width trên màn nhỏ */
+    }
+
+    .custom-col-2 {
+        grid-column: span 6;
+    }
+
+    .custom-col-3 {
+        grid-column: span 6;
+    }
+
+    .custom-col-4 {
+        grid-column: span 6;
+    }
 }
 
 @media(max-width:750px) {

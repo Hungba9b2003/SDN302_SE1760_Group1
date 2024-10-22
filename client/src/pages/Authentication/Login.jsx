@@ -27,7 +27,7 @@ const Login = () => {
     navigate("/");
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "http://localhost:6969/api/auth/login",
         {
           username,
           password,

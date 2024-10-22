@@ -13,7 +13,6 @@ const AdminResNavbar = () => {
         <Link to="/adminres/dashboard" >Dashboard</Link>
         <Link to="/adminres/feedback-rating">Feedback</Link>
         <Link to="/adminres/revenue-report">Reports</Link>
-        <Link to="/">Go home</Link>
         <Link to="/">Logout</Link>
       </div>
     </nav>

@@ -1,113 +1,154 @@
 import React, { useState, useEffect } from 'react';
-import '../../module/adminRes.css'; 
+import '../../module/adminRes.css';
 import '../../module/ManageProducts.css';
 import '../../module/CreateProductPopup.css';
 import '../../module/UpdateProductPopup.css';
-import AdminNavbar from '../../components/AdminComponents/AdminResNavbar';
-import AdminSidebar from '../../components/AdminComponents/AdminResSidebar';
+import UpdateProductPopup from './UpdateProductPopup';
+import axios from 'axios';
+import ConfirmDialog from './ConfirmDialog';
+import AdminResNavbar from './../../components/AdminComponents/AdminResNavbar';
+import AdminResSidebar from './../../components/AdminComponents/AdminResSidebar';
 
-const AdminResProduct = ({ setCreateProduct, setUpdateProduct }) => {
-  // const [products, setProducts] = useState([]);
-  // const [newProduct, setNewProduct] = useState({ name: '', price: '', description: '' });
+const AdminResProduct = ({ setCreateProduct }) => {
+  const [dishes, setDishes] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' });
+  const [updateProduct, setUpdateProduct] = useState(null);
+  const [deleteDishId, setDeleteDishId] = useState(null);
+  const [deleteDishName, setDeleteDishName] = useState('');
 
-  // useEffect(() => {
-  //   // Fetch products from the backend API
-  //   fetch('/api/admin/products')
-  //     .then(response => response.json())
-  //     .then(data => setProducts(data))
-  //     .catch(error => console.error(error));
-  // }, []);
+  useEffect(() => {
+    const fetchDishes = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/manage/dish');
+        setDishes(response.data);
+      } catch (error) {
+        console.error('Error fetching dishes:', error);
+      }
+    };
+    fetchDishes();
+  }, []);
 
-  // const handleAddProduct = () => {
-  //   // Add a new product to the backend API
-  //   fetch('/api/admin/products', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify(newProduct),
-  //   })
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       setProducts([...products, data]); // Update the product list
-  //       setNewProduct({ name: '', price: '', description: '' }); // Reset the form
-  //     })
-  //     .catch(error => console.error('Error adding product:', error));
-  // };
+  const handleDeleteClick = (id, name) => {
+    setDeleteDishId(id);
+    setDeleteDishName(name);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/manage/dish/${deleteDishId}`);
+      setDishes((prevDishes) => prevDishes.filter((dish) => dish._id !== deleteDishId));
+      alert('Dish deleted successfully');
+    } catch (error) {
+      console.error('Error deleting dish:', error);
+    } finally {
+      setDeleteDishId(null);
+      setDeleteDishName('');
+    }
+  };
+
+  const cancelDelete = () => {
+    setDeleteDishId(null);
+    setDeleteDishName('');
+  };
+
+  const getFilteredAndSortedDishes = () => {
+    let filteredDishes = dishes.filter((dish) =>
+      dish.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (sortConfig.key) {
+      filteredDishes.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return filteredDishes;
+  };
+
+  const handleSearchChange = (e) => setSearchTerm(e.target.value);
+
+  const handleSortChange = (e) => {
+    const [key, direction] = e.target.value.split('-');
+    setSortConfig({ key, direction });
+  };
+
+  const filteredAndSortedDishes = getFilteredAndSortedDishes();
 
   return (
     <div className="adminres-container">
-      <AdminNavbar />
+      <AdminResNavbar />
       <div className="adminres-content">
-        <AdminSidebar />
+        <AdminResSidebar />
         <div className="adminres-main">
-          <div className='manage'>
-            <div className='create'>
-            <h1>Dishes Management</h1>
+          <div className="manage">
+            <div className="create">
+              <h1>Dishes Management</h1>
               <button onClick={() => setCreateProduct(true)}>Create Product</button>
             </div>
-            <div className='container'>
-              <div className='row'>
-                <div className='col-md-2'>
-                  <select className="form-select" aria-label="Default select example">
-                    <option defaultValue={"sdaw"}>Order by</option>
-                    <option value="fsa">Alphabet</option>
-                    <option value="daw">Price</option>
+
+            <div className="container">
+              <div className="row">
+                <div className="custom-col custom-col-1">Sort by: </div>
+                <div className="custom-col custom-col-3">
+                  <select className="custom-select" onChange={handleSortChange}>
+                    <option value="">Select</option>
+                    <option value="name-asc">Alphabet (A-Z)</option>
+                    <option value="name-desc">Alphabet (Z-A)</option>
+                    <option value="price-asc">Price (Low to High)</option>
+                    <option value="price-desc">Price (High to Low)</option>
                   </select>
                 </div>
-                <div className='col-md-8 search'>
-                  <input type="text" placeholder='Search product' />
-                </div>
-                <div className='col-md-2 search-button'>
-                  <button >Search</button>
+                <div className="custom-col custom-col-8 search">
+                  <input
+                    type="text"
+                    placeholder="Search Dishes"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                  />
                 </div>
               </div>
             </div>
 
-
-            <div className="manage-items">
-              <div className="manage-items-title row">
-                <div className='col-md-2'>
-                  <p>Items</p>
+            <div className="manage-items card-container row">
+              {filteredAndSortedDishes.map((dish) => (
+                <div className="card custom-col-3" key={dish._id}>
+                  <div className="card-image">
+                    {dish.image && dish.image.length > 0 ? (
+                      <img
+                        src={`http://localhost:5000${dish.image[0].imagineUrl}`}
+                        alt={dish.name}
+                      />
+                    ) : (
+                      <span>No Image</span>
+                    )}
+                  </div>
+                  <div className="card-content">
+                    <h2>{dish.name}</h2>
+                    <p>{dish.description}</p>
+                    <p className="price">{dish.price}$</p>
+                    <div className="card-actions">
+                      <button style={{backgroundColor:"orange"}} onClick={() => setUpdateProduct(dish)}>Edit</button>
+                      <button style={{backgroundColor:"red"}} onClick={() => handleDeleteClick(dish._id, dish.name)}>Delete</button>
+                    </div>
+                  </div>
                 </div>
-                <div className='col-md-3'>
-                  <p>Dish</p>
-                </div>
-                <div className='col-md-1'>
-                  <p>Price</p>
-                </div>
-                <div className='col-md-4'>
-                  <p>Description</p>
-                </div>
-                <div className='col-md-2'>
-                  <p>Action</p>
-                </div>
-
-              </div>
-
-              <hr />
-              <div className="row manage-items-title manage-items-item ">
-                <div className='col-md-2'>
-                  <img src="https://media-api.advertisingvietnam.com/oapi/v1/media?uuid=3aab6b15-7347-48fd-b189-a56870880156&resolution=1000x&keepOriginal=true" alt="" />
-                </div>
-                <div className='col-md-3'>
-                  <p>sd</p>
-                </div>
-                <div className='col-md-1'>
-                  <p>12$</p>
-                </div>
-                <div className='col-md-4'>
-                  <p>Descriptiondddddddddddddddddddddddddbhfdiubiadeshuedawhu</p>
-                </div>
-                <div className='col-md-1'>
-                  <p className='manage-items-remove-icon' onClick={() => setUpdateProduct(true)}><i className="fa-solid fa-pen"></i></p>
-                </div>
-                <div className='col-md-1'>
-                  <p className='manage-items-remove-icon' onClick={() => removeFromManage(item.food_id)}><i className="fa-solid fa-trash"></i></p>
-                </div>
-                <hr />
-              </div>
+              ))}
             </div>
+
+            {updateProduct && (
+                <UpdateProductPopup setUpdateProduct={setUpdateProduct} dish={updateProduct} />
+            )}
+
+            {deleteDishId && (
+              <ConfirmDialog
+                message={`Are you sure you want to delete ${deleteDishName}?`}
+                onConfirm={confirmDelete}
+                onCancel={cancelDelete}
+              />
+            )}
           </div>
         </div>
       </div>

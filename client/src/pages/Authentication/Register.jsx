@@ -64,7 +64,7 @@ const Register = () => {
         return;
       }
       alert("User registered successfully");
-      await axios.post("http://localhost:5000/api/auth/register", {
+      await axios.post("http://localhost:6969/api/auth/register", {
         username,
         password,
         role,
