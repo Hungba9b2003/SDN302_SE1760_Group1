@@ -11,18 +11,31 @@ const FoodDisplay = ({ category }) => {
       <h2>Top dishes near you</h2>
       <div className="food-display-list">
         {foodListAPI.map((item) => {
-          if (category === "All" || category === item?.food_category) {
+          // Log ra categories để kiểm tra
+          console.log("item?.categories:", item?.categories);
+
+          // Kiểm tra nếu category là "All" hoặc nếu categories là mảng và có ít nhất một category trong mảng categories khớp với category
+          const isInCategory =
+            category === "All" ||
+            (Array.isArray(item?.categories) &&
+              item.categories.some((cat) => cat.name === category));
+
+          if (isInCategory || category === item?.categories?.name) {
             return (
               <FoodItem
-                key={item.food_id}
-                image={item.food_image}
-                name={item.food_name}
-                desc={item.food_desc}
-                price={item.food_price}
-                id={item.food_id}
+                key={item._id}
+                image={
+                  Object.values(item.image[0]).join("").split(".png")[0] +
+                  ".png"
+                }
+                name={item.name}
+                desc={item.description}
+                price={item.price}
+                id={item._id}
               />
             );
           }
+          return null; // Trả về null nếu không thuộc category
         })}
       </div>
     </div>

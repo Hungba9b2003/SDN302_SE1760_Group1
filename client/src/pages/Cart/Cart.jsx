@@ -4,13 +4,8 @@ import { StoreContext } from "../../Context/StoreContext";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const {
-    cartItems,
-    food_list,
-    removeFromCart,
-    getTotalCartAmount,
-    foodListAPI,
-  } = useContext(StoreContext);
+  const { cartItems, removeFromCart, getTotalCartAmount, foodListAPI } =
+    useContext(StoreContext);
   const navigate = useNavigate();
 
   return (
@@ -23,18 +18,26 @@ const Cart = () => {
         <br />
         <hr />
         {foodListAPI.map((item, index) => {
-          if (cartItems[item.food_id] > 0) {
+          const quantity = cartItems[item._id] || 0; // Lấy số lượng từ giỏ hàng, mặc định là 0 nếu không có
+          if (quantity > 0) {
             return (
               <div key={index}>
                 <div className="cart-items-title cart-items-item">
-                  <img src={item.food_image} alt="" />
-                  <p>{item.food_name}</p>
-                  <p>${item.food_price}</p>
-                  <div>{cartItems[item.food_id]}</div>
-                  <p>${item.food_price * cartItems[item.food_id]}</p>
+                  <img
+                    src={
+                      Object.values(item.image[0])
+                        .join("")
+                        .match(/.*\.(jpg|png)/i)?.[0] || ""
+                    }
+                    alt={item.name}
+                  />
+                  <p>{item.name}</p>
+                  <p>${item.price}</p>
+                  <div>{quantity}</div>
+                  <p>${item.price * quantity}</p>
                   <p
                     className="cart-items-remove-icon"
-                    onClick={() => removeFromCart(item.food_id)}
+                    onClick={() => removeFromCart(item._id)}
                   >
                     x
                   </p>
@@ -43,6 +46,7 @@ const Cart = () => {
               </div>
             );
           }
+          return null; // Không hiển thị nếu số lượng bằng 0
         })}
       </div>
       <div className="cart-bottom">

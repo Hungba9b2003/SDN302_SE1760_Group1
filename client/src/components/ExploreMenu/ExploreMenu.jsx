@@ -15,6 +15,9 @@ const ExploreMenu = ({ category, setCategory }) => {
       </p>
       <div className="explore-menu-list">
         {menuListAPI.map((item, index) => {
+          {
+            /* console.log(" item.menu_name is: " + item.menu_name); */
+          }
           return (
             <div
               onClick={() =>

@@ -5,7 +5,7 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
-  const [ordersData, setOrdersData] = useState({});
+  // const [ordersData, setOrdersData] = useState({});
   const [foodListAPI, setFoodListAPI] = useState([]); // State để lưu food_list từ API
   const [menuListAPI, setMenuListAPI] = useState([]); // State để lưu menu_list từ API
   // Gọi API để lấy dữ liệu từ http://localhost:9999/
@@ -14,8 +14,8 @@ const StoreContextProvider = (props) => {
       try {
         // Gọi API để lấy danh sách thực phẩm
         const foodResponse = await axios.get("http://localhost:9999/");
-        if (foodResponse?.data?.data?.Foods) {
-          setFoodListAPI(foodResponse.data.data.Foods); // Cập nhật state với dữ liệu từ API
+        if (foodResponse?.data?.data?.dishs) {
+          setFoodListAPI(foodResponse.data.data.dishs); // Cập nhật state với dữ liệu từ API
         } else {
           console.warn("Không tìm thấy 'Foods' trong dữ liệu trả về từ API.");
         }
@@ -37,8 +37,6 @@ const StoreContextProvider = (props) => {
     fetchData();
   }, []); // Chỉ chạy một lần sau khi component được render
 
-  console.log(menuListAPI);
-
   const addToCart = (itemId) => {
     if (!cartItems[itemId]) {
       setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
@@ -53,14 +51,20 @@ const StoreContextProvider = (props) => {
 
   const getTotalCartAmount = () => {
     let totalAmount = 0;
-    for (const item in cartItems) {
-      if (cartItems[item] > 0) {
-        let itemInfo = food_list.find(
-          (product) => product.food_id === Number(item)
-        );
-        totalAmount += itemInfo.food_price * cartItems[item];
+
+    for (const itemId in cartItems) {
+      const quantity = cartItems[itemId];
+      if (quantity > 0) {
+        // Find the item in foodListAPI using the food ID
+        const itemInfo = foodListAPI.find((product) => product._id === itemId);
+
+        // Ensure itemInfo exists before accessing its properties
+        if (itemInfo) {
+          totalAmount += itemInfo.price * quantity; // Adjusting to use the correct property for price
+        }
       }
     }
+
     return totalAmount;
   };
 
