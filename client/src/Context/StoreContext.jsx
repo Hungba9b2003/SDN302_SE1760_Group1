@@ -5,9 +5,9 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
-  // const [ordersData, setOrdersData] = useState({});
   const [foodListAPI, setFoodListAPI] = useState([]); // State để lưu food_list từ API
   const [menuListAPI, setMenuListAPI] = useState([]); // State để lưu menu_list từ API
+  const [restaurantListAPI, setRestaurantListAPI] = useState([]);
   // Gọi API để lấy dữ liệu từ http://localhost:9999/
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +24,16 @@ const StoreContextProvider = (props) => {
         const menuResponse = await axios.get("http://localhost:9999");
         if (menuResponse?.data?.data?.categories) {
           setMenuListAPI(menuResponse.data.data.categories); // Cập nhật state với dữ liệu từ API
+        } else {
+          console.warn(
+            "Không tìm thấy 'categories' trong dữ liệu trả về từ API."
+          );
+        }
+
+        // Gọi API để lấy thông tin nhà hàng
+        const restaurant = await axios.get("http://localhost:9999");
+        if (restaurant?.data?.data?.restaurants) {
+          setRestaurantListAPI(menuResponse.data.data.restaurants); // Cập nhật state với dữ liệu từ API
         } else {
           console.warn(
             "Không tìm thấy 'categories' trong dữ liệu trả về từ API."
@@ -73,6 +83,7 @@ const StoreContextProvider = (props) => {
   };
 
   const contextValue = {
+    restaurantListAPI,
     menuListAPI,
     foodListAPI,
     food_list,

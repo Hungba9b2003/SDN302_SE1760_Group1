@@ -7,7 +7,8 @@ import "./Detail.css";
 
 const Detail = () => {
   const { food_id } = useParams(); // Lấy ID món ăn từ URL
-  const { addToCart, foodListAPI } = useContext(StoreContext); // Lấy addToCart từ StoreContext
+  const { addToCart, foodListAPI, restaurantListAPI } =
+    useContext(StoreContext); // Lấy addToCart từ StoreContext
 
   // Tìm món ăn dựa trên ID
   const foodItem = foodListAPI.find((item) => item._id === food_id);
@@ -15,6 +16,18 @@ const Detail = () => {
   // Kiểm tra nếu không tìm thấy món ăn
   if (!foodItem) {
     return <div className="text-center">Món ăn không tồn tại.</div>;
+  }
+
+  // Tìm thông tin nhà hàng dựa trên restaurantId của món ăn
+  const restaurant = restaurantListAPI.find(
+    (rest) => rest.restaurantId === foodItem.restaurantId
+  );
+
+  // Kiểm tra nếu không tìm thấy nhà hàng
+  if (!restaurant) {
+    return (
+      <div className="text-center">Không tìm thấy thông tin nhà hàng.</div>
+    );
   }
 
   return (
@@ -60,8 +73,39 @@ const Detail = () => {
       </div>
 
       <div className="detail-down">
-        <h4>Mô tả chi tiết người bán</h4>
-        <p>{foodItem.description}</p>
+        <div className="seller-details">
+          <h2>Thông tin chi tiết người bán</h2>
+
+          {/* Tên người bán */}
+          <div className="seller-info">
+            <strong>Tên:</strong> {restaurant.resName}
+          </div>
+
+          {/* Địa chỉ người bán */}
+          <div className="seller-info">
+            <strong>Địa chỉ:</strong> {restaurant.resAddress}
+          </div>
+
+          {/* Hình ảnh người bán */}
+          <div className="seller-info">
+            <strong>Hình ảnh:</strong>
+            <img
+              src={restaurant.restImage}
+              alt="Seller"
+              className="seller-image"
+            />
+          </div>
+
+          {/* Trạng thái người bán */}
+          <div className="seller-info">
+            <strong>Trạng thái:</strong> {restaurant.status}
+          </div>
+
+          {/* Đánh giá người bán */}
+          <div className="seller-info">
+            <strong>Đánh giá:</strong> 5 / 5
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -15,25 +15,20 @@ const ExploreMenu = ({ category, setCategory }) => {
       </p>
       <div className="explore-menu-list">
         {menuListAPI.map((item, index) => {
-          {
-            /* console.log(" item.menu_name is: " + item.menu_name); */
-          }
           return (
             <div
               onClick={() =>
-                setCategory((prev) =>
-                  prev === item.menu_name ? "All" : item.menu_name
-                )
+                setCategory((prev) => (prev === item.name ? "All" : item.name))
               }
               key={index}
               className="explore-menu-list-item"
             >
               <img
                 src={item.menu_image}
-                className={category === item.menu_name ? "active" : ""}
+                className={category === item.name ? "active" : ""}
                 alt=""
               />
-              <p>{item.menu_name}</p>
+              <p>{item.name}</p>
             </div>
           );
         })}
