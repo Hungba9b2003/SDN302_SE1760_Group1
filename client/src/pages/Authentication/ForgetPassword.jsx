@@ -5,143 +5,158 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import { assets } from "../../assets/assets";
 import axios from "axios";
-import OtpInput from "react-otp-input";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const ForgetPassword = () => {
   const navigate = useNavigate();
   const [currState, setCurrState] = useState("forgetPassword");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const [timer, setTimer] = useState(30);
   // const [Form, setForm] = useState({""});
   const [prevAction, setPrevAction] = useState("");
   const [resendDisabled, setResendDisabled] = useState(false);
   const [otp, setOtp] = useState("");
+  const [emailAvailable, setEmailAvailable] = useState(false);
+  const token = localStorage.getItem("token");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const navigateTo = (state) => {
-    setCurrState(state);
-    history.pushState({ currState: state }, "", `#${state}`);
-    console.log(window.history.state);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
-  useEffect(() => {
-    console.log("oke");
-    const initialHash = window.location.hash.substring(1);
-    if (initialHash) {
-      setCurrState(initialHash);
-    }
-
-    const handlePopState = (event) => {
-      if (event.state && event.state.currState) {
-        setCurrState(event.state.currState);
-      } else {
-        setCurrState("forgetPassword");
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, []);
-
-  const handleForgetPassword = async () => {
-    if (role === "") {
-      document.getElementById("message").textContent =
-        "Please choose role before login";
-      document.getElementById("message").style.display = "block";
-    }
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        {
-          username,
-          password,
-        }
-      );
-      alert("Login successful");
-    } catch (error) {
-      console.error("There was an error logging in!", error);
-    }
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
-  const handleResendOtp = () => {
+  const handleResendOtp = async (email) => {
     setResendDisabled(true);
     console.log("Resend OTP");
-    setTimer(30);
+    setTimer(60);
     const countdown = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 1) {
           clearInterval(countdown);
           setResendDisabled(false);
-          return 30;
+          return 60;
         }
         return prev - 1;
       });
     }, 1000);
+    try {
+      await axios.post("http://localhost:5000/api/auth/send-otp", {
+        token,
+        type: "forgetPassword",
+        email: email,
+      });
+      document.getElementById("message-otp").textContent =
+        "OTP lasts for 10 minutes !";
+    } catch (error) {
+      return error.response
+        ? error.response.data
+        : { message: "An error occurred" };
+    }
   };
 
-  const handleBack = () => {
-    setCurrState(prevAction);
-    console.log("Back to previous step");
+  const handleSubmitOtp = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/verify-otp",
+        {
+          otp,
+          email: email,
+        }
+      );
+      if (response.status === 200) {
+        setCurrState("resetPassword");
+      }
+    } catch (error) {
+      console.log(error.message);
+      document.getElementById("message").style.color = "red";
+      document.getElementById("message").textContent =
+        error.response.data.message;
+    }
   };
-  const otpForm = (
-    <>
-      <div className="wrapper"></div>
-      <div className="login">
-        <div className="login-container">
-          <div className="login-title" style={{ justifyContent: "center" }}>
-            <h2>Enter OTP</h2>
-          </div>
-          <OtpInput
-            value={otp}
-            onChange={(e) => {
-              setOtp(e);
-              console.log(otp);
-            }}
-            numInputs={6}
-            renderSeparator={<span style={{ width: "10px" }}></span>}
-            containerStyle={{ justifyContent: "center" }}
-            inputStyle={{ width: "2em", height: "3em", textAlign: "center" }}
-            renderInput={(props) => <input {...props} />}
-          />
+  const checkEmailExists = async () => {
+    const email = document.getElementById("email").value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      document.getElementById("message").style.color = "red";
+      document.getElementById("message").textContent = "Invalid email format";
+      return;
+    } else {
+      document.getElementById("message").textContent = "";
 
-          <div className="otp-container">
-            <div
-              className="message"
-              id="messageOtp"
-              style={{
-                margin: "0 0 20px 0",
-                textAlign: "center",
-                color: "red",
-                display: "none",
-              }}
-            ></div>
-            <p className="otp-message">Have you received OTP yet?</p>
-            <button
-              onClick={handleResendOtp}
-              disabled={resendDisabled}
-              className={`resend-otp ${resendDisabled ? "disabled" : ""}`}
-            >
-              {resendDisabled
-                ? `Please try again later ${timer} second...`
-                : "Resend OTP"}
-            </button>
-          </div>
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/auth/check-email",
+          {
+            type: "forgetPassword",
+            email: email,
+          }
+        );
+        const message = response.data.message;
+        if (response.status === 200) {
+          document.getElementById("message").style.color = "green";
+          document.getElementById("message").textContent =
+            response.data.message;
+          setEmailAvailable(true);
+          handleResendOtp(email);
+        }
+      } catch (error) {
+        document.getElementById("message").style.color = "red";
+        document.getElementById("message").textContent =
+          error.response.data.message;
+      }
+    }
+  };
 
-          <button
-            onClick={() => {
-              navigateTo("resetPassword");
-              alert("OTP is correctly!");
-            }}
-          >
-            Next
-          </button>
-        </div>
-      </div>
-    </>
+  const OtpEnter = (
+    <div>
+      <label>Enter OTP:</label>
+      <br></br>
+      <input
+        type="text"
+        placeholder="Enter OTP"
+        value={otp}
+        onChange={(e) => setOtp(e.target.value)}
+      />
+      <button
+        style={{ height: "38.18px", marginLeft: "7px" }}
+        onClick={() => handleResendOtp(email)}
+        disabled={resendDisabled}
+        className={`resend-otp ${resendDisabled ? "disabled" : ""}`}
+      >
+        {resendDisabled ? `Wait ${timer}S` : "Get OTP"}
+      </button>
+      <br></br>
+      <span id="message-otp" style={{ color: "red" }}></span>
+      {/* Phần tử hiển thị thông báo lỗi */}
+    </div>
   );
+  const handleForgetPassword = async () => {
+    if (password !== confirmPassword) {
+      document.getElementById("message-register").textContent =
+        "Confirm password is wrong !";
+      return;
+    }
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/forget-password",
+        {
+          email,
+          password,
+        }
+      );
+      alert("Password changed successfully !");
+      navigate("/authentication/login");
+    } catch (error) {
+      console.error("Error", error);
+    }
+  };
+
   const resetPasswordForm = (
     <>
       <div className="wrapper"></div>
@@ -152,20 +167,65 @@ const ForgetPassword = () => {
               <h2>Change password:</h2>
             </div>
             <div className="login-inputs">
-              <label>New password:</label>
-              <input
-                type="text"
-                placeholder="Enter new password"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-              <label>Re-enter password:</label>
-              <input
-                type="text"
-                placeholder="Enter new password"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
+              <label>Password:</label>
+              <div
+                style={{
+                  position: "relative",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <input
+                  style={{ width: "100%" }}
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <span
+                  onClick={togglePasswordVisibility}
+                  style={{
+                    position: "absolute",
+                    right: "20px",
+                    transform: "translateY(12.5%)",
+                    cursor: "pointer",
+                    zIndex: 1,
+                  }}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+              </div>
+              <div className="login-inputs">
+                <label>Return Password:</label>
+                <div
+                  style={{
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <input
+                    style={{ width: "100%" }}
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Return Password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  <span
+                    onClick={toggleConfirmPasswordVisibility}
+                    style={{
+                      cursor: "pointer",
+                      position: "absolute",
+                      transform: "translateY(12.5%)",
+                      right: "20px",
+                      zIndex: 1,
+                    }}
+                  >
+                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}{" "}
+                    {/* Icon con mắt */}
+                  </span>
+                </div>
+              </div>
             </div>
             <div
               className="message"
@@ -175,8 +235,7 @@ const ForgetPassword = () => {
 
             <button
               onClick={() => {
-                navigate("/authentication/login");
-                alert("Password changed successfully !");
+                handleForgetPassword();
               }}
             >
               Accept
@@ -203,22 +262,51 @@ const ForgetPassword = () => {
               <input
                 type="text"
                 placeholder="Enter email"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                id="email"
+                value={email}
+                onChange={(e) => {
+                  setOtp(""), setEmailAvailable(false);
+                  setEmail(e.target.value);
+                  document.getElementById("message").textContent = "";
+                }}
               />
+              {emailAvailable && OtpEnter}
             </div>
+
             <div
               className="message"
               id="message"
-              style={{ color: "red", display: "none" }}
+              style={{ color: "red" }}
             ></div>
-            <button
-              onClick={() => {
-                navigateTo("otp");
-              }}
-            >
-              Next
-            </button>
+
+            {!emailAvailable ? (
+              <button
+                onClick={() => {
+                  checkEmailExists();
+                }}
+              >
+                Next
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  handleSubmitOtp();
+                }}
+              >
+                Reset password
+              </button>
+            )}
+
+            <p>
+              Already have an account?{" "}
+              <span
+                onClick={() => {
+                  navigate("/authentication/login");
+                }}
+              >
+                Login here
+              </span>
+            </p>
           </div>
         </div>
       </div>
@@ -227,7 +315,6 @@ const ForgetPassword = () => {
   return (
     <div>
       {currState === "forgetPassword" && forgetPasswordForm}
-      {currState === "otp" && otpForm}
       {currState === "resetPassword" && resetPasswordForm}
     </div>
   );

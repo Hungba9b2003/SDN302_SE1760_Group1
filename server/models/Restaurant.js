@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
-
+const validator = require("validator");
 const RestaurantSchema = new mongoose.Schema(
   {
-    restName: {
+    resName: {
       type: String,
       required: true,
     },
@@ -11,31 +11,40 @@ const RestaurantSchema = new mongoose.Schema(
       required: true,
     },
     restImage: {
-      type: String,
+      type: [],
     },
     status: {
       type: String,
-      enum: ["enable", "disable"],
-      default: "enable",
+      enum: ["Active", "InActive"],
+      default: "Active",
     },
     approved: {
       type: Boolean,
       default: false,
     },
+    cartId: {
+      type: String,
+    },
     approvealDate: {
       type: Date,
-      default: false,
     },
-    menu: String,
-    revenueReport: String,
+    menu: [],
+    revenueReport: [],
     createdAt: {
       type: Date,
       default: Date.now,
     },
-    updateAt: Date,
+    updateAt: {
+      type: Date,
+      default: Date.now,
+    },
+    licenceType: {
+      type: Number,
+    },
   },
   {
-    collection: "Restaurant", // Tên collection trong MongoDB
+    collection: "Restaurant",
+    strict: false,
   }
 );
 
