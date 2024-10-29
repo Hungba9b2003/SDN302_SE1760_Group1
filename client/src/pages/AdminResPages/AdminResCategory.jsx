@@ -11,9 +11,11 @@ const AdminResCategory = () => {
     const [categories, setCategories] = useState([]);
     const [newCategoryName, setNewCategoryName] = useState('');
     const [newCategoryImage, setNewCategoryImage] = useState(null);
+    const [newCategoryImagePreview, setNewCategoryImagePreview] = useState(''); // Preview for new category image
     const [deleteCategoryId, setDeleteCategoryId] = useState(null);
     const [deleteCategoryName, setDeleteCategoryName] = useState('');
     const [editingCategory, setEditingCategory] = useState(null);
+    const [editingCategoryImagePreview, setEditingCategoryImagePreview] = useState(''); // Preview for editing category image
     const [isDialogOpen, setIsDialogOpen] = useState(false); // Điều khiển dialog xác nhận
 
     // Fetch danh sách category từ backend
@@ -41,6 +43,7 @@ const AdminResCategory = () => {
             setCategories((prev) => [...prev, response.data]);
             setNewCategoryName('');
             setNewCategoryImage(null);
+            setNewCategoryImagePreview(''); // Reset preview
             alert('Category added successfully');
             window.location.reload();
         } catch (error) {
@@ -49,7 +52,11 @@ const AdminResCategory = () => {
     };
 
     // Mở form update category
-    const handleEditClick = (category) => setEditingCategory(category);
+    const handleEditClick = (category) => {
+        setEditingCategory(category);
+        setEditingCategoryImagePreview(category.menu_image); // Set the current image for preview
+        setNewCategoryName(category.name); // Set the current name for editing
+    };
 
     // Cập nhật category
     const handleUpdateCategory = async (e) => {
@@ -67,6 +74,8 @@ const AdminResCategory = () => {
             );
             setEditingCategory(null);
             setNewCategoryImage(null);
+            setNewCategoryImagePreview(''); // Reset preview
+            setEditingCategoryImagePreview(''); // Reset editing preview
             alert('Category updated successfully');
             window.location.reload();
         } catch (error) {
@@ -95,6 +104,32 @@ const AdminResCategory = () => {
         }
     };
 
+    // Handle image selection for creating a new category
+    const handleNewCategoryImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setNewCategoryImage(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setNewCategoryImagePreview(reader.result); // Set the preview URL for the new image
+            };
+            reader.readAsDataURL(file); // Create a preview URL
+        }
+    };
+
+    // Handle image selection for updating an existing category
+    const handleEditingCategoryImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setNewCategoryImage(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setEditingCategoryImagePreview(reader.result); // Set the preview URL for the editing image
+            };
+            reader.readAsDataURL(file); // Create a preview URL
+        }
+    };
+
     return (
         <div className="adminres-container">
             <AdminResNavbar />
@@ -118,11 +153,29 @@ const AdminResCategory = () => {
                             <label>Upload Image</label>
                             <input
                                 type="file"
-                                onChange={(e) => setNewCategoryImage(e.target.files[0])}
+                                onChange={handleNewCategoryImageChange} // Use specific handler for new category
                             />
+                            {newCategoryImagePreview && (
+                                <img
+                                    src={newCategoryImagePreview}
+                                    alt="Preview"
+                                    style={{ width: '100%', height: 'auto', marginTop: '10px' }}
+                                />
+                            )}
                         </div>
                         <div className="form-buttons">
                             <button type="submit">Add Category</button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setNewCategoryName('');
+                                    setNewCategoryImage(null);
+                                    setNewCategoryImagePreview(''); // Reset preview
+                                }}
+                                className="cancel-button"
+                            >
+                                Cancel
+                            </button>
                         </div>
                     </form>
 
@@ -133,8 +186,9 @@ const AdminResCategory = () => {
                                 <div className="card-image">
                                     {category.menu_image ? (
                                         <img
-                                            src={`http://localhost:5000${category.menu_image}`}
+                                            src={category.menu_image} // Use the Cloudinary URL directly
                                             alt={category.name}
+                                            style={{ width: '100%', height: 'auto' }} // Optional styling
                                         />
                                     ) : (
                                         <span>No Image</span>
@@ -172,8 +226,15 @@ const AdminResCategory = () => {
                                 <label>Upload New Image</label>
                                 <input
                                     type="file"
-                                    onChange={(e) => setNewCategoryImage(e.target.files[0])}
+                                    onChange={handleEditingCategoryImageChange} // Use specific handler for editing
                                 />
+                                {editingCategoryImagePreview && (
+                                    <img
+                                        src={editingCategoryImagePreview}
+                                        alt="Editing Preview"
+                                        style={{ width: '100%', height: 'auto', marginTop: '10px' }}
+                                    />
+                                )}
                             </div>
                             <div className="form-buttons">
                                 <button type="submit">Save Changes</button>

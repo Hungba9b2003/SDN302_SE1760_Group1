@@ -113,11 +113,11 @@ const AdminResProduct = ({ setCreateProduct }) => {
 
             <div className="manage-items card-container">
               {filteredAndSortedDishes.map((dish) => (
-                <div className="card " key={dish._id}>
+                <div className="card" key={dish._id}>
                   <div className="card-image">
                     {dish.image && dish.image.length > 0 ? (
                       <img
-                        src={`http://localhost:5000${dish.image[0].imagineUrl}`}
+                        src={dish.image[0].imagineUrl} // Sử dụng trực tiếp URL từ Cloudinary
                         alt={dish.name}
                       />
                     ) : (

@@ -12,12 +12,12 @@ const CreateProductPopup = ({ setCreateProduct }) => {
   const [newCategory, setNewCategory] = useState('');
   const [discount, setDiscount] = useState('');
   const [image, setImage] = useState(null);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const [categories, setCategories] = useState([]);
   const [useNewCategory, setUseNewCategory] = useState(false);
   const [error, setError] = useState('');
   const [formErrors, setFormErrors] = useState({});
 
-  // Fetch categories from server
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -30,7 +30,13 @@ const CreateProductPopup = ({ setCreateProduct }) => {
     fetchCategories();
   }, []);
 
-  // Validate if the new category is unique
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImage(files);
+    const previewUrls = files.map(file => URL.createObjectURL(file));
+    setImagePreviews(previewUrls);
+  };
+
   const handleNewCategoryChange = (e) => {
     const inputCategory = e.target.value;
     setNewCategory(inputCategory);
@@ -42,7 +48,6 @@ const CreateProductPopup = ({ setCreateProduct }) => {
     }
   };
 
-  // Form validation
   const validateForm = () => {
     const errors = {};
 
@@ -58,13 +63,12 @@ const CreateProductPopup = ({ setCreateProduct }) => {
     if (useNewCategory && !newCategory.trim()) {
       errors.newCategory = 'New category cannot be empty';
     }
-    if (!image) {
+    if (!image || image.length === 0) {
       errors.image = 'At least one image must be uploaded';
     }
     return errors;
   };
 
-  // Handle form submission and validation
   const handleCreate = async () => {
     const errors = validateForm();
     setFormErrors(errors);
@@ -78,18 +82,16 @@ const CreateProductPopup = ({ setCreateProduct }) => {
     formData.append('price', price);
     formData.append('description', description);
     formData.append('discount', discount);
+    
+    const selectedCategory = useNewCategory ? newCategory : category;
+    formData.append('categories', selectedCategory);
 
     if (image && image.length > 0) {
-      for (let i = 0; i < image.length; i++) {
-        formData.append('image', image[i]);
-      }
+      image.forEach((img) => formData.append('image', img));
     }
 
-    const selectedCategory = useNewCategory ? newCategory : category;
-    formData.append('categories', selectedCategory); // Gửi tên Category lên backend
-
     try {
-      const response = await axios.post('http://localhost:5000/manage/createDish', formData, {
+      const response = await axios.post('http://localhost:5000/manage/create-dish', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log(response.data);
@@ -115,9 +117,15 @@ const CreateProductPopup = ({ setCreateProduct }) => {
             type="file"
             accept="image/png, image/jpeg"
             multiple
-            onChange={(e) => setImage(e.target.files)}
+            onChange={handleImageChange}
           />
           {formErrors.image && <p style={{ color: 'red' }}>{formErrors.image}</p>}
+
+          <div className="image-preview-container">
+            {imagePreviews.map((preview, index) => (
+              <img key={index} src={preview} alt={`Preview ${index + 1}`} className="preview-image" />
+            ))}
+          </div>
 
           <div>Name</div>
           <input

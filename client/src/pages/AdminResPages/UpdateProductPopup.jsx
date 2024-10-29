@@ -11,13 +11,12 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
   const [category, setCategory] = useState(''); 
   const [discount, setDiscount] = useState('');
   const [image, setImage] = useState([]); // State để lưu cả ảnh cũ và ảnh mới
-  const [categories, setCategories] = useState([]); // Danh sách category
-  const [newCategory, setNewCategory] = useState(''); // Tên category mới
+  const [categories, setCategories] = useState([]);
+  const [newCategory, setNewCategory] = useState('');
   const [useNewCategory, setUseNewCategory] = useState(false);
-  const [error, setError] = useState(''); // State cho thông báo lỗi
-  const [formErrors, setFormErrors] = useState({}); // Lỗi validation form
+  const [error, setError] = useState('');
+  const [formErrors, setFormErrors] = useState({});
 
-  // Lấy danh sách category từ API
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -30,7 +29,6 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
     fetchCategories();
   }, []);
 
-  // Thiết lập giá trị ban đầu của các trường khi mở popup
   useEffect(() => {
     if (dish) {
       setName(dish.name);
@@ -38,69 +36,61 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
       setDescription(dish.description);
       setCategory(dish.categories);
       setDiscount(dish.discount || '');
-      
+
       // Lưu trữ các ảnh cũ vào state image
       if (dish.image && dish.image.length > 0) {
-        setImage(dish.image.map(img => ({ url: `http://localhost:5000${img.imagineUrl}`, name: img.imagineName, isNew: false })));
+        setImage(dish.image.map(img => ({
+          url: img.imagineUrl, // URL từ Cloudinary trực tiếp
+          name: img.imagineName,
+          isNew: false
+        })));
       }
     }
   }, [dish]);
 
-  // Xử lý xóa ảnh
   const handleDeleteImage = (imgName) => {
     setImage((prevImages) => prevImages.filter((img) => img.name !== imgName));
   };
 
-  // Xử lý thêm ảnh mới vào danh sách ảnh
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    const newImages = files.map(file => ({ url: URL.createObjectURL(file), file, isNew: true }));
+    const newImages = files.map(file => ({
+      url: URL.createObjectURL(file),
+      file,
+      isNew: true
+    }));
     setImage(prevImages => [...prevImages, ...newImages]);
   };
 
-   // Kiểm tra form trước khi submit
-   const validateForm = () => {
+  const validateForm = () => {
     const errors = {};
-
-    if (!name.trim()) {
-      errors.name = 'Product name is required';
-    }
-    if (!price || price <= 0) {
-      errors.price = 'Price must be a positive number';
-    }
-    if (!useNewCategory && !category) {
-      errors.category = 'Please select a category';
-    }
-    if (useNewCategory && !newCategory.trim()) {
-      errors.newCategory = 'New category cannot be empty';
-    }
+    if (!name.trim()) errors.name = 'Product name is required';
+    if (!price || price <= 0) errors.price = 'Price must be a positive number';
+    if (!useNewCategory && !category) errors.category = 'Please select a category';
+    if (useNewCategory && !newCategory.trim()) errors.newCategory = 'New category cannot be empty';
     return errors;
   };
 
-  // Xử lý cập nhật sản phẩm
   const handleUpdate = async () => {
     const errors = validateForm();
     setFormErrors(errors);
 
-    if (Object.keys(errors).length > 0 || error) {
-      return;
-    }
+    if (Object.keys(errors).length > 0 || error) return;
 
     const formData = new FormData();
     formData.append('name', name);
     formData.append('price', price);
     formData.append('description', description);
     formData.append('discount', discount);
-
     const selectedCategory = useNewCategory ? newCategory : category;
     formData.append('categories', selectedCategory);
 
-    // Gửi danh sách ảnh và chỉ thêm ảnh mới (isNew: true)
+    // Gửi danh sách ảnh, chỉ thêm ảnh mới (isNew: true)
     image.forEach((img) => {
       if (img.isNew) {
         formData.append('image', img.file);
       } else {
-        formData.append('existingImages[]', img.name); // Tên ảnh cũ để giữ lại
+        formData.append('existingImages[]', img.name);
       }
     });
 
@@ -122,111 +112,59 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
       <div className="update-popup-container">
         <div className="update-popup-title">
           <h2>Update Product</h2>
-          <img
-            onClick={() => setUpdateProduct(false)}
-            src={assets.cross_icon}
-            alt="close"
-          />
+          <img onClick={() => setUpdateProduct(false)} src={assets.cross_icon} alt="close" />
         </div>
         <div className="update-popup-inputs">
           <div>Image</div>
           <div className="image-preview-container">
             {image.map((img, index) => (
               <div key={index} className="image-wrapper">
-                <img
-                  src={img.url}
-                  alt={`Dish image ${index + 1}`}
-                  className="preview-image"
-                />
+                <img src={img.url} alt={`Dish image ${index + 1}`} className="preview-image" />
                 <button className="delete-button" onClick={() => handleDeleteImage(img.name)}>
                   &times;
                 </button>
               </div>
             ))}
           </div>
-          <input
-            type="file"
-            multiple
-            accept="image/png, image/jpeg"
-            onChange={handleImageChange}
-          />
-
+          <input type="file" multiple accept="image/png, image/jpeg" onChange={handleImageChange} />
 
           <div>Name</div>
-          <input
-            type="text"
-            placeholder="Product name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
+          <input type="text" placeholder="Product name" value={name} onChange={(e) => setName(e.target.value)} required />
           {formErrors.name && <p style={{ color: 'red' }}>{formErrors.name}</p>}
 
           <div>Price</div>
-          <input
-            type="number"
-            placeholder="Price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-          />
+          <input type="number" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} required />
           {formErrors.price && <p style={{ color: 'red' }}>{formErrors.price}</p>}
 
           <div>Description</div>
-          <input
-            type="text"
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+          <input type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
 
           <div>Category</div>
           {!useNewCategory ? (
             <>
-              <select
-                className="form-select"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              >
+              <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)}>
                 <option value="" disabled>Select category</option>
                 {categories.map((cat) => (
-                  <option key={cat._id} value={cat.name}>
-                    {cat.name}
-                  </option>
+                  <option key={cat._id} value={cat.name}>{cat.name}</option>
                 ))}
               </select>
               {formErrors.category && <p style={{ color: 'red' }}>{formErrors.category}</p>}
             </>
           ) : (
             <div>
-              <input
-                type="text"
-                placeholder="Enter new category"
-                value={newCategory}
-                onChange={handleNewCategoryChange}
-                required
-              />
+              <input type="text" placeholder="Enter new category" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} required />
               {error && <p style={{ color: 'red' }}>{error}</p>}
               {formErrors.newCategory && <p style={{ color: 'red' }}>{formErrors.newCategory}</p>}
             </div>
           )}
 
           <div>
-            <input
-              type="checkbox"
-              checked={useNewCategory}
-              onChange={() => setUseNewCategory(!useNewCategory)}
-            />
+            <input type="checkbox" checked={useNewCategory} onChange={() => setUseNewCategory(!useNewCategory)} />
             <label style={{ marginLeft: "10px" }}>Enter new category</label>
           </div>
 
           <div>Discount</div>
-          <input
-            type="number"
-            placeholder="Discount"
-            value={discount}
-            onChange={(e) => setDiscount(e.target.value)}
-          />
+          <input type="number" placeholder="Discount" value={discount} onChange={(e) => setDiscount(e.target.value)} />
         </div>
         <button onClick={handleUpdate}>Update</button>
       </div>

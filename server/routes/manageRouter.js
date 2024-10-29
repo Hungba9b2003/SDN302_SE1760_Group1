@@ -33,7 +33,7 @@ const {
 
 // Các routes cho Dish
 router.post(
-  "/createDish", 
+  "/create-dish", 
   upload.array('image', 10), // Cho phép upload nhiều file
   [
     body("name").notEmpty().withMessage("Dish name is required"),
