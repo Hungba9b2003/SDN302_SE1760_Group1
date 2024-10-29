@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./Authentication.css";
 // import "./RegisterPopup.css";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { assets } from "../../assets/assets";
 import axios from "axios";
-import OtpInput from "react-otp-input";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Register = () => {
@@ -21,11 +20,13 @@ const Register = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [otp, setOtp] = useState("");
-  const [timer, setTimer] = useState(30);
+  const [timer, setTimer] = useState();
   const [oldEmail, setOldEmail] = useState("");
   const [resendDisabled, setResendDisabled] = useState(false);
+  const [cardId, setCardId] = useState("");
+  const [cardIdPhoto, setCardIdPhoto] = useState(null);
   // const [Form, setForm] = useState({""});
-
+  const token = localStorage.getItem("token");
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -33,6 +34,7 @@ const Register = () => {
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
+
   const handleResendOtp = async (email) => {
     setResendDisabled(true);
     console.log("Resend OTP");
@@ -50,6 +52,8 @@ const Register = () => {
     try {
       setOldEmail(oldEmail);
       await axios.post("http://localhost:5000/api/auth/send-otp", {
+        token,
+        type: "register",
         oldEmail: oldEmail,
         email: email,
         role: role,
@@ -81,6 +85,7 @@ const Register = () => {
         const response = await axios.post(
           "http://localhost:5000/api/auth/check-email",
           {
+            type: "register",
             email: emailValue,
           }
         );
@@ -101,9 +106,8 @@ const Register = () => {
   const handleRegister = async () => {
     try {
       if (role === "") {
-        document.getElementById("message").textContent =
+        document.getElementById("message-register").textContent =
           "Please choose role before register";
-        document.getElementById("message").style.display = "block";
         return;
       }
       const inputs = document.querySelectorAll("#register input");
@@ -131,10 +135,25 @@ const Register = () => {
       formData.append("name", name);
       formData.append("phone", phone);
       formData.append("otp", otp);
+      // formData.append("token", token);
+      formData.append("cardId", cardId);
+      formData.append("cardIdPhoto", cardIdPhoto);
 
+      formData.append("address", address);
       // Kiểm tra dữ liệu trước khi gửi
-      console.log("Sending data:", { email, password, role, name, phone });
-
+      console.log("Sending data:", {
+        email,
+        password,
+        role,
+        name,
+        phone,
+        cardId,
+        cardIdPhoto,
+        address,
+      });
+      const formData2 = new FormData();
+      formData2.append("cardIdPhoto", cardIdPhoto);
+      console.log(cardIdPhoto);
       const response = await axios.post(
         "http://localhost:5000/api/auth/register",
         formData,
@@ -144,9 +163,24 @@ const Register = () => {
           },
         }
       );
-      if (response.data.message === "Account registered successfully") {
+
+      if (
+        response.status === 201 &&
+        response.data.message === "Account registered successfully"
+      ) {
         alert("User registered successfully");
-        navigate("/authentication/login");
+        try {
+          await axios.post("http://localhost:5000/api/auth/upload", formData2, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+        } catch (error) {
+          console.error("Error uploading file:", error); // In ra lỗi nếu có
+        }
+        // navigate("/authentication/login");
+      } else {
+        console.error("Registration failed:", response.data);
       }
       const message = response.data.errorList[0]?.message; // Tránh lỗi nếu errorList không tồn tại
       if (message) {
@@ -154,7 +188,7 @@ const Register = () => {
         return;
       }
     } catch (error) {
-      console.error("There was an error registering the user!", error);
+      console.log(error.message);
     }
   };
 
@@ -209,7 +243,9 @@ const Register = () => {
                   className="select_role"
                   value={role}
                   onChange={(e) => {
-                    setEmail(""),
+                    (document.getElementById("message-register").textContent =
+                      ""),
+                      setEmail(""),
                       setPhone(""),
                       setPassword(""),
                       setConfirmPassword(""),
@@ -348,12 +384,29 @@ const Register = () => {
                   <div className="input-row">
                     <div className="half-width">
                       <label>Email:</label>
-                      <input
-                        type="text"
-                        placeholder="Your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                      />
+                      <div
+                        style={{
+                          position: "relative",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <input
+                          type="text"
+                          placeholder="Your email"
+                          onChange={(e) => {
+                            document.getElementById(
+                              "message-email"
+                            ).textContent = "";
+                            setEmailAvailable(false);
+                            clearTimeout(checkTimeout);
+                            checkTimeout = setTimeout(() => {
+                              checkEmail(e);
+                            }, 2000);
+                          }}
+                        />
+                      </div>
+                      <p id="message-email" style={{ color: "red" }}></p>
                     </div>
                     <div className="half-width">
                       <label>Restaurant Name:</label>
@@ -365,10 +418,10 @@ const Register = () => {
                       />
                     </div>
                   </div>
+                  {emailAvailable && OtpEnter}
 
                   <div className="input-row">
                     <div className="half-width">
-                      <label>Password:</label>
                       <label>Password:</label>
                       <div
                         style={{
@@ -411,12 +464,33 @@ const Register = () => {
                   <div className="input-row">
                     <div className="half-width">
                       <label>Return Password:</label>
-                      <input
-                        type="password"
-                        placeholder="Retype Password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                      />
+                      <div
+                        style={{
+                          position: "relative",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <input
+                          type={showConfirmPassword ? "text" : "password"}
+                          placeholder="Return Password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
+                        <span
+                          onClick={toggleConfirmPasswordVisibility}
+                          style={{
+                            cursor: "pointer",
+                            position: "absolute",
+                            transform: "translateY(12.5%)",
+                            right: "20px",
+                            zIndex: 1,
+                          }}
+                        >
+                          {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}{" "}
+                          {/* Icon con mắt */}
+                        </span>
+                      </div>
                     </div>
                     <div className="half-width">
                       <label>Restaurant address:</label>
@@ -434,19 +508,41 @@ const Register = () => {
                       <br></br>
                       <input
                         type="text"
-                        placeholder="Retype Password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="ID card number"
+                        value={cardId}
+                        onChange={(e) => setCardId(e.target.value)}
                       />
                     </div>
                   </div>
                   <div className="half-width">
-                    <label>Front photo of ID card:</label>
+                    <label>Photo of ID card:</label>
                     <input
                       type="file"
                       placeholder="Retype Password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      name="cartPhoto"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          // Lấy đuôi file
+                          const fileExtension = file.name.split(".").pop();
+                          // Tạo tên mới cho file bằng cardId
+                          const newFileName = `${cardId}.${fileExtension}`; // Sử dụng cardId làm tên mới
+                          // Tạo đối tượng File mới
+                          const renamedFile = new File([file], newFileName, {
+                            type: file.type,
+                          });
+                          // Cập nhật state với file mới
+                          setCardIdPhoto(renamedFile);
+                        }
+                      }}
+                    />
+                  </div>
+                  <div>
+                    Ví dụ:
+                    <img
+                      src="/src/assets/Can-Cuoc-Cong-Dan-Ga.jpg"
+                      alt="ID card"
+                      width="100%"
                     />
                   </div>
 

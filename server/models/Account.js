@@ -35,7 +35,7 @@ const AccountSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: {
-        values: ["Active", "Inactive"],
+        values: ["Active", "InActive"],
       },
     },
     role: {
