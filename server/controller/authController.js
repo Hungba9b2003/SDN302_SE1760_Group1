@@ -20,7 +20,7 @@ let transporter = nodemailer.createTransport({
   secure: false,
   auth: {
     user: "phamthuy091984@gmail.com",
-    pass: "nepb skbc pikd sugs",
+    pass: "dnpn xvny tffg btru",
   },
 });
 
@@ -105,21 +105,21 @@ exports.login = async (req, res) => {
 
 exports.sendOtp = async (req, res) => {
   const { role, oldEmail, type } = req.body;
+  const otp = Math.floor(100000 + Math.random() * 900000); // Tạo mã OTP 6 chữ số
   const email = req.body.email.toLowerCase();
+  let mailOptions = {
+    from: "phamthuy091984@gmail.com",
+    to: email.toLowerCase(),
+    subject: "OTP Verification",
+    text: `Your OTP code is ${otp}`,
+  };
+
   if (type === "register") {
     console.log("Email:", email);
     if (!email || typeof email !== "string" || email.trim() === "") {
       return res.status(400).send("Invalid email address");
     }
 
-    const otp = Math.floor(100000 + Math.random() * 900000); // Tạo mã OTP 6 chữ số
-
-    let mailOptions = {
-      from: "phamthuy091984@gmail.com",
-      to: email.toLowerCase(),
-      subject: "OTP Verification",
-      text: `Your OTP code is ${otp}`,
-    };
     await Account.findOneAndUpdate(
       { email: oldEmail ? oldEmail : email },
       {
@@ -145,19 +145,18 @@ exports.sendOtp = async (req, res) => {
       }
     }, 600000);
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("Error sending email:", error);
-        return res.status(500).send("Error sending OTP");
-      } else {
-        console.log("Email sent:", info.response);
-        req.session.otp = otp;
-        req.session.email = email;
-        return res.status(200).send({ message: "OTP sent successfully", otp });
-      }
-    });
+    // transporter.sendMail(mailOptions, (error, info) => {
+    //   if (error) {
+    //     console.error("Error sending email:", error);
+    //     return res.status(500).send("Error sending OTP");
+    //   } else {
+    //     console.log("Email sent:", info.response);
+    //     req.session.otp = otp;
+    //     req.session.email = email;
+    //     return res.status(200).send({ message: "OTP sent successfully", otp });
+    //   }
+    // });
   } else if (type === "forgetPassword") {
-    const otp = Math.floor(100000 + Math.random() * 900000);
     await Account.findOneAndUpdate(
       { email: email },
       {
@@ -175,17 +174,24 @@ exports.sendOtp = async (req, res) => {
         console.error("Error removing OTP:", error);
       }
     }, 600000);
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("Error sending email:", error);
-        return res.status(500).send("Error sending OTP");
-      } else {
-        console.log("Email sent:", info.response);
-        req.session.otp = otp;
-        req.session.email = email;
-        return res.status(200).send({ message: "OTP sent successfully", otp });
-      }
-    });
+    try {
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error("Error sending email:", error);
+          return res.status(500).send("Error sending OTP");
+        } else {
+          console.log("Email sent:", info.response);
+          req.session.otp = otp;
+          req.session.email = email;
+          return res
+            .status(200)
+            .send({ message: "OTP sent successfully", otp });
+        }
+      });
+    } catch (error) {
+      console.error("Error sending email:", error);
+      return res.status(500).send("Error sending OTP");
+    }
   }
 };
 exports.checkEmail = async (req, res) => {

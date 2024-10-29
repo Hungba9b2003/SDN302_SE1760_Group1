@@ -150,8 +150,8 @@ const ForgetPassword = () => {
           password,
         }
       );
-      alert("Reset password successful !");
-      navigate("/");
+      alert("Password changed successfully !");
+      navigate("/authentication/login");
     } catch (error) {
       console.error("Error", error);
     }
@@ -235,8 +235,7 @@ const ForgetPassword = () => {
 
             <button
               onClick={() => {
-                navigate("/authentication/login");
-                alert("Password changed successfully !");
+                handleForgetPassword();
               }}
             >
               Accept
