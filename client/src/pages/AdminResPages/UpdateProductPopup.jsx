@@ -8,33 +8,29 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState(''); 
   const [discount, setDiscount] = useState('');
-  const [image, setImage] = useState(null);
-  const [dishes, setDishes] = useState([]);
-  const [existingImageUrl, setExistingImageUrl] = useState('');
-  const [newCategory, setNewCategory] = useState('');
+  const [image, setImage] = useState([]); // State để lưu cả ảnh cũ và ảnh mới
+  const [categories, setCategories] = useState([]); // Danh sách category
+  const [newCategory, setNewCategory] = useState(''); // Tên category mới
   const [useNewCategory, setUseNewCategory] = useState(false);
-  const [error, setError] = useState(''); // State for error messages
-  const [formErrors, setFormErrors] = useState({}); // Form validation errors
+  const [error, setError] = useState(''); // State cho thông báo lỗi
+  const [formErrors, setFormErrors] = useState({}); // Lỗi validation form
 
-  // Fetch categories from the server
+  // Lấy danh sách category từ API
   useEffect(() => {
-    const fetchDishes = async () => {
+    const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/manage/dish');
-        const uniqueCategories = Array.from(
-          new Set(response.data.map((dish) => dish.categories))
-        );
-        setDishes(uniqueCategories);
+        const response = await axios.get('http://localhost:5000/manage/category');
+        setCategories(response.data);
       } catch (error) {
-        console.error("Error fetching dishes:", error);
+        console.error("Error fetching categories:", error);
       }
     };
-    fetchDishes();
+    fetchCategories();
   }, []);
 
-  // Set initial field values when popup opens
+  // Thiết lập giá trị ban đầu của các trường khi mở popup
   useEffect(() => {
     if (dish) {
       setName(dish.name);
@@ -42,26 +38,28 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
       setDescription(dish.description);
       setCategory(dish.categories);
       setDiscount(dish.discount || '');
-      setExistingImageUrl(
-        dish.image && dish.image.length > 0 ? dish.image[0].imagineUrl : ''
-      );
+      
+      // Lưu trữ các ảnh cũ vào state image
+      if (dish.image && dish.image.length > 0) {
+        setImage(dish.image.map(img => ({ url: `http://localhost:5000${img.imagineUrl}`, name: img.imagineName, isNew: false })));
+      }
     }
   }, [dish]);
 
-  // Validate if the new category already exists
-  const handleNewCategoryChange = (e) => {
-    const inputCategory = e.target.value;
-    setNewCategory(inputCategory);
-
-    if (dishes.includes(inputCategory)) {
-      setError('Category already exists!');
-    } else {
-      setError('');
-    }
+  // Xử lý xóa ảnh
+  const handleDeleteImage = (imgName) => {
+    setImage((prevImages) => prevImages.filter((img) => img.name !== imgName));
   };
 
-  // Validate the form before submission
-  const validateForm = () => {
+  // Xử lý thêm ảnh mới vào danh sách ảnh
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    const newImages = files.map(file => ({ url: URL.createObjectURL(file), file, isNew: true }));
+    setImage(prevImages => [...prevImages, ...newImages]);
+  };
+
+   // Kiểm tra form trước khi submit
+   const validateForm = () => {
     const errors = {};
 
     if (!name.trim()) {
@@ -79,7 +77,7 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
     return errors;
   };
 
-  // Handle the update product logic
+  // Xử lý cập nhật sản phẩm
   const handleUpdate = async () => {
     const errors = validateForm();
     setFormErrors(errors);
@@ -93,11 +91,18 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
     formData.append('price', price);
     formData.append('description', description);
     formData.append('discount', discount);
-    formData.append('categories', useNewCategory ? newCategory : category);
 
-    if (image) {
-      formData.append('image', image);
-    }
+    const selectedCategory = useNewCategory ? newCategory : category;
+    formData.append('categories', selectedCategory);
+
+    // Gửi danh sách ảnh và chỉ thêm ảnh mới (isNew: true)
+    image.forEach((img) => {
+      if (img.isNew) {
+        formData.append('image', img.file);
+      } else {
+        formData.append('existingImages[]', img.name); // Tên ảnh cũ để giữ lại
+      }
+    });
 
     try {
       await axios.put(`http://localhost:5000/manage/dish/${dish._id}`, formData, {
@@ -125,18 +130,27 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
         </div>
         <div className="update-popup-inputs">
           <div>Image</div>
-          {existingImageUrl && !image && (
-            <img
-              src={`http://localhost:5000${existingImageUrl}`}
-              alt="Current dish"
-              style={{ width: '100px', height: 'auto' }}
-            />
-          )}
+          <div className="image-preview-container">
+            {image.map((img, index) => (
+              <div key={index} className="image-wrapper">
+                <img
+                  src={img.url}
+                  alt={`Dish image ${index + 1}`}
+                  className="preview-image"
+                />
+                <button className="delete-button" onClick={() => handleDeleteImage(img.name)}>
+                  &times;
+                </button>
+              </div>
+            ))}
+          </div>
           <input
             type="file"
+            multiple
             accept="image/png, image/jpeg"
-            onChange={(e) => setImage(e.target.files[0])}
+            onChange={handleImageChange}
           />
+
 
           <div>Name</div>
           <input
@@ -175,9 +189,9 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
                 onChange={(e) => setCategory(e.target.value)}
               >
                 <option value="" disabled>Select category</option>
-                {dishes.map((cat, index) => (
-                  <option key={index} value={cat}>
-                    {cat}
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat.name}>
+                    {cat.name}
                   </option>
                 ))}
               </select>

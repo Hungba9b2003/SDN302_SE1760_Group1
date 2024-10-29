@@ -15,7 +15,8 @@ const DishSchema = new mongoose.Schema(
       required: true,
     },
     categories: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "category",
       required: true,
     },
     image: [
@@ -30,7 +31,7 @@ const DishSchema = new mongoose.Schema(
     reviews: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Review",
+        ref: "review",
       },
     ],
   },
@@ -39,6 +40,6 @@ const DishSchema = new mongoose.Schema(
   }
 );
 
-const Dish = mongoose.model("Dish", DishSchema);
+const Dish = mongoose.model("dish", DishSchema);
 
 module.exports = Dish;

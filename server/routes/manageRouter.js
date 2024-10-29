@@ -22,7 +22,11 @@ const {
   getDishes,
   getDishById,
   updateDish,
-  deleteDish
+  deleteDish,
+  getCategory,
+  newCategory,
+  updateCategory,
+  deleteCategory,
 } = require("../controller/dishController");
 
 
@@ -39,9 +43,10 @@ router.post(
 );
 
 router.get("/dish", getDishes);
+router.get("/category", getCategory);
 router.get("/dish/:id", getDishById);
 router.put(
-  "/dish/:id", upload.single('image'),
+  "/dish/:id", upload.array('image',10),
   [
     body("name").notEmpty().withMessage("Dish name is required"),
     body("price").isFloat({ min: 0 }).withMessage("Price must be a positive number"),
@@ -51,4 +56,21 @@ router.put(
 
 router.delete("/dish/:id", deleteDish);
 
+router.post(
+  "/category",
+  upload.single('menu_image'), // Upload một file menu_image cho Category
+  [
+    body("name").notEmpty().withMessage("Category name is required")
+  ],
+  newCategory
+);
+router.put(
+  "/category/:id",
+  upload.single('menu_image'), // Upload một file menu_image cho Category
+  [
+    body("name").notEmpty().withMessage("Category name is required")
+  ],
+  updateCategory
+);
+router.delete("/category/:id", deleteCategory);
 module.exports = router;

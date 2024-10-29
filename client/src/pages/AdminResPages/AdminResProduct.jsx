@@ -81,7 +81,6 @@ const AdminResProduct = ({ setCreateProduct }) => {
     <div className="adminres-container">
       <AdminResNavbar />
       <div className="adminres-content">
-        <AdminResSidebar />
         <div className="adminres-main">
           <div className="manage">
             <div className="create">
@@ -112,9 +111,9 @@ const AdminResProduct = ({ setCreateProduct }) => {
               </div>
             </div>
 
-            <div className="manage-items card-container row">
+            <div className="manage-items card-container">
               {filteredAndSortedDishes.map((dish) => (
-                <div className="card custom-col-3" key={dish._id}>
+                <div className="card " key={dish._id}>
                   <div className="card-image">
                     {dish.image && dish.image.length > 0 ? (
                       <img

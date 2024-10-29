@@ -11,28 +11,23 @@ const CreateProductPopup = ({ setCreateProduct }) => {
   const [category, setCategory] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [discount, setDiscount] = useState('');
-  const [image, setImage] = useState('');
-  const [dishes, setDishes] = useState([]);
+  const [image, setImage] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [useNewCategory, setUseNewCategory] = useState(false);
-  const [error, setError] = useState(''); // State for error message
-  const [formErrors, setFormErrors] = useState({}); // Form validation errors
+  const [error, setError] = useState('');
+  const [formErrors, setFormErrors] = useState({});
 
-  // Fetch dishes from server
+  // Fetch categories from server
   useEffect(() => {
-    const fetchDishes = async () => {
+    const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/manage/dish');
-        
-        const uniqueCategories = Array.from(
-          new Set(response.data.map((dish) => dish.categories))
-        );
-
-        setDishes(uniqueCategories);
+        const response = await axios.get('http://localhost:5000/manage/category');
+        setCategories(response.data.map((category) => category.name));
       } catch (error) {
-        console.error('Error fetching dishes:', error);
+        console.error('Error fetching categories:', error);
       }
     };
-    fetchDishes();
+    fetchCategories();
   }, []);
 
   // Validate if the new category is unique
@@ -40,7 +35,7 @@ const CreateProductPopup = ({ setCreateProduct }) => {
     const inputCategory = e.target.value;
     setNewCategory(inputCategory);
 
-    if (dishes.includes(inputCategory)) {
+    if (categories.includes(inputCategory)) {
       setError('Category already exists!');
     } else {
       setError('');
@@ -74,7 +69,6 @@ const CreateProductPopup = ({ setCreateProduct }) => {
     const errors = validateForm();
     setFormErrors(errors);
 
-    // Stop form submission if there are errors
     if (Object.keys(errors).length > 0 || error) {
       return;
     }
@@ -92,7 +86,7 @@ const CreateProductPopup = ({ setCreateProduct }) => {
     }
 
     const selectedCategory = useNewCategory ? newCategory : category;
-    formData.append('categories', selectedCategory);
+    formData.append('categories', selectedCategory); // Gửi tên Category lên backend
 
     try {
       const response = await axios.post('http://localhost:5000/manage/createDish', formData, {
@@ -162,7 +156,7 @@ const CreateProductPopup = ({ setCreateProduct }) => {
                 onChange={(e) => setCategory(e.target.value)}
               >
                 <option value="" disabled>Select category</option>
-                {dishes.map((cat, index) => (
+                {categories.map((cat, index) => (
                   <option key={index} value={cat}>
                     {cat}
                   </option>

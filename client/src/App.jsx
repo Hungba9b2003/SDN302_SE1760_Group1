@@ -26,6 +26,7 @@ import StoreContextProvider from "./Context/StoreContext";
 import OrderHistory from "./components/OrderHistory/OrderHistory";
 
 import "./index.css";
+import AdminResCategory from "./pages/AdminResPages/AdminResCategory";
 
 const App = () => {
   const location = useLocation();
@@ -69,6 +70,7 @@ const App = () => {
             <Route path="/adminres/dashboard" element={<AdminResDashboard />} />
             <Route path="/adminres/revenue-report" element={<AdminResRevenueReport />} />
             <Route path="/adminres/manage" element={<AdminResProduct setCreateProduct={setCreateProduct} setUpdateProduct={setUpdateProduct} />} />
+            <Route path="/adminres/category" element={<AdminResCategory />} />
             <Route path="/adminres/feedback-rating" element={<AdminResFeedbackRating />} />
           </Routes>
         </StoreContextProvider>
