@@ -40,7 +40,7 @@ const CustomerSchema = new mongoose.Schema(
     },
   },
   {
-    collection: "Customer",
+    collection: "customers",
     strict: false,
   }
 );

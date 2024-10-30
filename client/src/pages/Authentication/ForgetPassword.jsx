@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Authentication.css";
 // import "./RegisterPopup.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import { assets } from "../../assets/assets";
 import axios from "axios";
@@ -9,6 +9,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const ForgetPassword = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [currState, setCurrState] = useState("forgetPassword");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
@@ -27,6 +28,28 @@ const ForgetPassword = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  useEffect(() => {
+    const checkToken = async () => {
+      const currentToken = localStorage.getItem("token");
+      console.log(currentToken);
+      if (currentToken) {
+        try {
+          await axios.post("http://localhost:5000/api/auth/check-token", {
+            token: currentToken,
+          });
+          alert("You have not logged in to your account!");
+          navigate("/");
+        } catch (error) {
+          localStorage.removeItem("token");
+        }
+      }
+    };
+
+    // Chỉ chạy checkToken nếu đường dẫn là "/"
+    if (location.pathname === "/authentication/forgetPassword") {
+      checkToken();
+    }
+  }, [location.pathname, navigate]);
 
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);

@@ -40,6 +40,7 @@ exports.checkToken = async (req, res, next) => {
     res.json({ decoded });
   });
 };
+
 exports.isAuthenticated = (req, res, next) => {
   const { token } = req.body;
   if (!token) {
@@ -78,7 +79,7 @@ exports.login = async (req, res) => {
 
     const account = await Account.findOne({ email: email });
 
-    if (!account) {
+    if (!account || account.status == null) {
       return res.status(400).json({ message: "Email is not exist !" });
     }
 
@@ -104,21 +105,23 @@ exports.login = async (req, res) => {
 };
 
 exports.sendOtp = async (req, res) => {
-  const { role, oldEmail, type } = req.body;
+  const { role, oldEmail, type, email } = req.body;
   const otp = Math.floor(100000 + Math.random() * 900000); // Tạo mã OTP 6 chữ số
-  const email = req.body.email.toLowerCase();
+
+  // Kiểm tra xem email có tồn tại và hợp lệ không
+  if (!email || typeof email !== "string" || email.trim() === "") {
+    return res.status(400).send("Invalid email address");
+  }
+
   let mailOptions = {
     from: "phamthuy091984@gmail.com",
-    to: email.toLowerCase(),
+    to: email.toLowerCase(), // Chỉ gọi toLowerCase() khi email hợp lệ
     subject: "OTP Verification",
     text: `Your OTP code is ${otp}`,
   };
 
   if (type === "register") {
     console.log("Email:", email);
-    if (!email || typeof email !== "string" || email.trim() === "") {
-      return res.status(400).send("Invalid email address");
-    }
 
     await Account.findOneAndUpdate(
       { email: oldEmail ? oldEmail : email },
@@ -144,18 +147,17 @@ exports.sendOtp = async (req, res) => {
         console.error("Error removing OTP:", error);
       }
     }, 600000);
-
-    // transporter.sendMail(mailOptions, (error, info) => {
-    //   if (error) {
-    //     console.error("Error sending email:", error);
-    //     return res.status(500).send("Error sending OTP");
-    //   } else {
-    //     console.log("Email sent:", info.response);
-    //     req.session.otp = otp;
-    //     req.session.email = email;
-    //     return res.status(200).send({ message: "OTP sent successfully", otp });
-    //   }
-    // });
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+        return res.status(500).send("Error sending OTP");
+      } else {
+        console.log("Email sent:", info.response);
+        req.session.otp = otp;
+        req.session.email = email;
+        return res.status(200).send({ message: "OTP sent successfully", otp });
+      }
+    });
   } else if (type === "forgetPassword") {
     await Account.findOneAndUpdate(
       { email: email },
@@ -235,7 +237,10 @@ exports.checkEmail = async (req, res) => {
     }
   } else if (type === "forgetPassword") {
     try {
-      const checkExist = await Account.findOne({ email: email });
+      const checkExist = await Account.findOne({
+        email: email,
+        status: { $ne: null },
+      });
       // console.log(checkExist.status);
       if (checkExist) {
         return res.status(200).send({ message: "Email is oke" });
@@ -284,7 +289,7 @@ exports.forgetPassword = async (req, res) => {
   const account = await Account.findOneAndUpdate(
     { email: email },
     { password: hashedPassword },
-    { new: true }
+    { updateAt: Date.now() }
   );
 
   if (account) {
@@ -309,6 +314,7 @@ exports.register = async (req, res) => {
           message: "There are fields left blank.",
         });
       }
+
       const customer = new Restaurant({
         name: name,
         phone: phone,
@@ -324,7 +330,7 @@ exports.register = async (req, res) => {
 
       // Kiểm tra hợp lệ của account
       const accountErrors = account.validateSync();
-      if (accountErrors) {
+      if (accountErrors && accountErrors.errors != null) {
         errors.push(
           ...Object.values(accountErrors.errors).map(
             (err) => err.properties.errorInfo
@@ -334,7 +340,7 @@ exports.register = async (req, res) => {
 
       // Kiểm tra hợp lệ của customer
       const customerErrors = customer.validateSync();
-      if (customerErrors) {
+      if (customerErrors && customerErrors.errors != null) {
         errors.push(
           ...Object.values(customerErrors.errors).map(
             (err) => err.properties.errorInfo
@@ -349,17 +355,25 @@ exports.register = async (req, res) => {
       }
 
       const accountCheck = await Account.findOne({ email: email });
-      if (otp != accountCheck.otp) {
+      if (accountCheck) {
+        if (otp != accountCheck.otp) {
+          errors.push({
+            code: "IOtp",
+            message: "OTP is incorrect !",
+          });
+        }
+      } else {
         errors.push({
           code: "IOtp",
-          message: "OTP is incorrect !",
+          message: "Please enter -Get OTP-",
         });
       }
-
-      if (errors.length > 0) {
-        return res
-          .status(200)
-          .json({ errorType: "ValidationError", errorList: errors });
+      const filteredErrors = errors.filter((error) => error != null);
+      if (filteredErrors.length > 0) {
+        return res.status(400).json({
+          errorType: "ValidationError",
+          errorList: filteredErrors,
+        });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);

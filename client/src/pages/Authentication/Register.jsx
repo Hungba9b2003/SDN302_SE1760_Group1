@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./Authentication.css";
 // import "./RegisterPopup.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { assets } from "../../assets/assets";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Register = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [emailAvailable, setEmailAvailable] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,6 +31,28 @@ const Register = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  useEffect(() => {
+    const checkToken = async () => {
+      const currentToken = localStorage.getItem("token");
+      console.log(currentToken);
+      if (currentToken) {
+        try {
+          await axios.post("http://localhost:5000/api/auth/check-token", {
+            token: currentToken,
+          });
+          alert("You have not logged in to your account!");
+          navigate("/");
+        } catch (error) {
+          localStorage.removeItem("token");
+        }
+      }
+    };
+
+    // Chỉ chạy checkToken nếu đường dẫn là "/"
+    if (location.pathname === "/authentication/register") {
+      checkToken();
+    }
+  }, [location.pathname, navigate]);
 
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
@@ -163,18 +186,29 @@ const Register = () => {
           },
         }
       );
-
+      alert("User registered successfully");
+      navigate("/");
       if (
         response.status === 201 &&
-        response.data.message === "Account registered successfully"
+        response.data.message === "Account registered successfully" &&
+        role === "Customer"
       ) {
         alert("User registered successfully");
+        navigate("/authentication/login");
+      }
+      if (
+        response.status === 201 &&
+        response.data.message === "Account registered successfully" &&
+        role === "Restaurant"
+      ) {
         try {
           await axios.post("http://localhost:5000/api/auth/upload", formData2, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           });
+          alert("User registered successfully");
+          navigate("/authentication/login");
         } catch (error) {
           console.error("Error uploading file:", error); // In ra lỗi nếu có
         }
@@ -182,13 +216,13 @@ const Register = () => {
       } else {
         console.error("Registration failed:", response.data);
       }
-      const message = response.data.errorList[0]?.message; // Tránh lỗi nếu errorList không tồn tại
+    } catch (error) {
+      console.log(error.response.data.errorList[0]?.message);
+      const message = error.response.data.errorList[0]?.message; // Tránh lỗi nếu errorList không tồn tại
       if (message) {
         document.getElementById("message-register").textContent = message;
         return;
       }
-    } catch (error) {
-      console.log(error.message);
     }
   };
 

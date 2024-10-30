@@ -16,6 +16,7 @@ import AdminUsers from "./pages/AdminPages/AdminUser";
 import AdminFeedbackRating from "./pages/AdminPages/AdminFeedbackRating";
 import AdminProduct from "./pages/AdminPages/AdminProduct";
 import Detail from "./pages/Detail/Detail";
+import Checkout from "./pages/Checkout/Checkout";
 import CreateProductPopup from "./pages/AdminResPages/CreateProductPopup";
 import UpdateProductPopup from "./pages/AdminResPages/UpdateProductPopup";
 import AdminResDashboard from "./components/AdminComponents/AdminResDashboard";
@@ -52,6 +53,7 @@ const App = () => {
                 path="/authentication/forgetPassword"
                 element={<ForgetPassword />}
               />
+              <Route path="/checkout" element={<Checkout />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/order" element={<PlaceOrder />} />
               <Route path="/myorder" element={<MyOrders />} />
