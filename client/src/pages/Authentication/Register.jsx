@@ -128,6 +128,7 @@ const Register = () => {
         return;
       }
 
+<<<<<<< HEAD
       const formData = new FormData();
       formData.append("email", email);
       formData.append("password", password);
@@ -143,6 +144,19 @@ const Register = () => {
       // Kiểm tra dữ liệu trước khi gửi
       console.log("Sending data:", {
         email,
+=======
+      if (otp === "123456") {
+        navigate("/authentication/login", { registerSuccess: "oke" });
+      } else {
+        document.getElementById("messageOtp").textContent =
+          "OTP nhập không đúng";
+        document.getElementById("messageOtp").style.display = "block";
+        return;
+      }
+      alert("User registered successfully");
+      await axios.post("http://localhost:6969/api/auth/register", {
+        username,
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
         password,
         role,
         name,

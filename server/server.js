@@ -8,11 +8,22 @@ const app = express();
 const multer = require("multer");
 const morgan = require("morgan");
 const session = require("express-session");
+<<<<<<< HEAD
 const dotenv = require("dotenv");
 const path = require("path");
 // Kết nối database
 const mydatabase = require("./config/mydatabase");
 // Routes
+=======
+const bodyParser = require("body-parser");
+const dotenv = require("dotenv");
+const path = require("path");
+// Kết nối database
+const connectDB = require("./config/database");
+const mydatabase = require("./config/mydatabase");
+// Routes
+const authRoutes = require("./routes/authRouter");
+>>>>>>> 0be81e2443a33ec44903e66be47299ef02a9ef70
 const manageRoutes = require("./routes/manageRouter");
 
 app.use(morgan("dev"));
@@ -43,6 +54,12 @@ app.post("/api/decode-token", (req, res) => {
 app.use("/assets", express.static("src/assets"));
 app.use("/api/auth", authRoutes);
 
+<<<<<<< HEAD
+=======
+const dotenv = require("dotenv");
+dotenv.config();
+
+>>>>>>> 0be81e2443a33ec44903e66be47299ef02a9ef70
 // Cấu hình session
 app.use(
   session({
