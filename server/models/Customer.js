@@ -1,5 +1,37 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+
+// Cart Schema
+const CartSchema = new mongoose.Schema(
+  {
+    items: [
+      {
+        dishId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Dish",
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+          default: 1,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+    totalAmount: {
+      type: Number,
+      default: 0,
+    },
+  },
+  {
+    _id: false,
+  }
+);
+
 const CustomerSchema = new mongoose.Schema(
   {
     name: {
@@ -17,7 +49,6 @@ const CustomerSchema = new mongoose.Schema(
         },
       },
     },
-
     avatar: {
       type: String,
       default: "/avatar/default",
@@ -26,16 +57,18 @@ const CustomerSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    orders: {
-      type: [],
-      default: [],
-    },
+    orders: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Order",
+      },
+    ],
     cart: {
-      type: [],
-      default: [],
+      type: CartSchema,
+      default: {},
     },
     address: {
-      type: [],
+      type: Array,
       default: [],
     },
   },

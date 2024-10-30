@@ -9,11 +9,15 @@ const authRoutes = require("./routes/authRouter");
 const app = express();
 const multer = require("multer");
 const morgan = require("morgan");
+const authMiddleware = require("./middlewares/authMiddleware");
+const dotenv = require("dotenv");
+const CustomerRouter = require("./routes/Customer.router");
+const OrderRouter = require("./routes/order.router");
+const bodyParser = require("body-parser");
 
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
-const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -37,9 +41,9 @@ app.post("/api/decode-token", (req, res) => {
 
 app.use("/assets", express.static("src/assets"));
 app.use("/api/auth", authRoutes);
+app.use("/api/customer", authMiddleware, CustomerRouter);
+app.use("/api/order", authMiddleware, OrderRouter);
 
-const dotenv = require("dotenv");
-dotenv.config();
 const PORT = process.env.PORT || 6969;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
