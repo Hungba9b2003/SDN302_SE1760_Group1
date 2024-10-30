@@ -1,3 +1,4 @@
+// models/Dish.js
 const mongoose = require("mongoose");
 
 const DishSchema = new mongoose.Schema(
@@ -15,15 +16,11 @@ const DishSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      default: "/images/default-dish",
+      default: "/images/default-dish.jpg",
     },
-    category: {
-      type: String,
-      required: true,
-    },
-    restaurantId: {
+    categoryId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Restaurant",
+      ref: "Dish_Category",
       required: true,
     },
   },
@@ -34,5 +31,4 @@ const DishSchema = new mongoose.Schema(
 );
 
 const Dish = mongoose.model("Dish", DishSchema);
-
 module.exports = Dish;

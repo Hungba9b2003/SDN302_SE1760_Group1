@@ -1,49 +1,38 @@
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Thêm thư viện điều hướng
+import { useNavigate } from "react-router-dom";
 import "./FoodItem.css";
 import { assets } from "../../assets/assets";
 import { StoreContext } from "../../Context/StoreContext";
 
-const FoodItem = ({ image, name, price, desc, id }) => {
-  const [itemCount, setItemCount] = useState(0);
-  const { cartItems, addToCart, removeFromCart } = useContext(StoreContext);
+const FoodItem = ({ image, name, price, desc, id, category }) => {
+  const { cartItems, updateCart } = useContext(StoreContext);
 
-  // State for managing comment box visibility and the comment itself
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [comment, setComment] = useState("");
-
-  // State for managing wishlist
   const [isWishlisted, setIsWishlisted] = useState(false);
 
-  // Sử dụng hook để điều hướng
   const navigate = useNavigate();
 
-  // Function to toggle comment box
   const toggleCommentBox = () => {
     setShowCommentBox(!showCommentBox);
   };
 
-  // Function to handle comment submission
   const handleCommentSubmit = () => {
     console.log(`Comment for ${name}:`, comment);
-    setComment(""); // Clear comment after submission
-    setShowCommentBox(false); // Close the comment box after submission
+    setComment("");
+    setShowCommentBox(false);
   };
 
-  // Function to toggle wishlist status
   const toggleWishlist = () => {
     setIsWishlisted(!isWishlisted);
   };
 
-  // Function to navigate to detail page
   const handleDetailPage = () => {
-    navigate(`/detail/${id}`); // Điều hướng đến trang chi tiết với ID món ăn
+    navigate(`/detail/${id}`);
   };
 
   return (
     <div className="food-item">
-      {" "}
-      {/* Điều hướng khi nhấp vào món ăn */}
       <div className="food-item-img-container">
         <img
           className="food-item-image"
@@ -56,10 +45,10 @@ const FoodItem = ({ image, name, price, desc, id }) => {
             className="add"
             onClick={(e) => {
               e.stopPropagation();
-              addToCart(id);
+              updateCart(id, 1); // Set quantity to 1 if item is not in cart
             }}
             src={assets.add_icon_white}
-            alt=""
+            alt="Add to cart"
           />
         ) : (
           <div className="food-item-counter">
@@ -67,40 +56,38 @@ const FoodItem = ({ image, name, price, desc, id }) => {
               src={assets.remove_icon_red}
               onClick={(e) => {
                 e.stopPropagation();
-                removeFromCart(id);
+                updateCart(id, cartItems[id] - 1); // Decrease quantity by 1
               }}
-              alt=""
+              alt="Remove from cart"
             />
             <p>{cartItems[id]}</p>
             <img
               src={assets.add_icon_green}
               onClick={(e) => {
                 e.stopPropagation();
-                addToCart(id);
+                updateCart(id, cartItems[id] + 1); // Increase quantity by 1
               }}
-              alt=""
+              alt="Add to cart"
             />
           </div>
         )}
       </div>
       <div className="food-item-info">
         <div className="food-item-name-rating">
-          <p>{name}</p> <img src={assets.rating_starts} alt="" />
+          <p>{name}</p> <img src={assets.rating_stars} alt="Rating" />
         </div>
         <p className="food-item-desc">{desc}</p>
         <p className="food-item-price">₹{price}</p>
       </div>
-      {/* Wishlist button */}
       <button
         className={`wishlist-button ${isWishlisted ? "wishlisted" : ""}`}
         onClick={(e) => {
           e.stopPropagation();
           toggleWishlist();
-        }} // Ngăn chặn sự kiện click lan truyền
+        }}
       >
         {isWishlisted ? "Wishlisted" : "Wishlist"}
       </button>
-      {/* Button to toggle comment box */}
       <button
         className="comment-button"
         onClick={(e) => {
@@ -110,7 +97,6 @@ const FoodItem = ({ image, name, price, desc, id }) => {
       >
         {showCommentBox ? "Cancel" : "Comment"}
       </button>
-      {/* Comment input box */}
       {showCommentBox && (
         <div className="comment-box">
           <textarea

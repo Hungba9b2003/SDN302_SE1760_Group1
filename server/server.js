@@ -14,6 +14,7 @@ const dotenv = require("dotenv");
 const CustomerRouter = require("./routes/Customer.router");
 const OrderRouter = require("./routes/order.router");
 const bodyParser = require("body-parser");
+const DishRouter = require("./routes/dish.router");
 
 app.use(morgan("dev"));
 app.use(express.json());
@@ -43,6 +44,7 @@ app.use("/assets", express.static("src/assets"));
 app.use("/api/auth", authRoutes);
 app.use("/api/customer", authMiddleware, CustomerRouter);
 app.use("/api/order", authMiddleware, OrderRouter);
+app.use("/api/dish", DishRouter);
 
 const PORT = process.env.PORT || 6969;
 app.listen(PORT, () => {
