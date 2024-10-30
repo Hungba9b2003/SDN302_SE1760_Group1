@@ -56,7 +56,7 @@ const AccountSchema = new mongoose.Schema(
     lastLogin: Date,
   },
   {
-    collection: "Account",
+    collection: "accounts",
     strict: false, // Cho phép thêm các trường không định nghĩa
   }
 );

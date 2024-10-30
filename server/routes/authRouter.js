@@ -15,7 +15,7 @@ const {
   forgetPassword,
 } = require("../controller/authController"); // Ensure this path is correct
 router.use(express.urlencoded({ extended: true }));
-// Define your routes
+
 router.post("/check-token", checkToken);
 router.post("/login", isAuthenticated, login);
 router.post("/send-otp", isAuthenticated, sendOtp);
@@ -24,16 +24,13 @@ router.post("/forget-password", forgetPassword);
 
 const uploadPath =
   "E:/Kì 7/SDN302/SDN302_FoodDelivery/client/src/assets/img/idphoto";
-
-// Kiểm tra và tạo thư mục nếu chưa tồn tại
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
 }
 
-// Cấu hình multer để lưu trữ ảnh
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, uploadPath); // Đường dẫn lưu ảnh
+    cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
     const newFileName = file.originalname;
@@ -43,9 +40,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Route để upload file
 router.post("/upload", upload.single("cardIdPhoto"), (req, res) => {
-  console.log(req.body); // Log req.body trong route
+  console.log(req.body);
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
   }

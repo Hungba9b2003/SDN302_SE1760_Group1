@@ -16,6 +16,7 @@ import AdminUsers from "./pages/AdminPages/AdminUser";
 import AdminFeedbackRating from "./pages/AdminPages/AdminFeedbackRating";
 import AdminProduct from "./pages/AdminPages/AdminProduct";
 import Detail from "./pages/Detail/Detail";
+import Checkout from "./pages/Checkout/Checkout";
 import CreateProductPopup from "./pages/AdminResPages/CreateProductPopup";
 import UpdateProductPopup from "./pages/AdminResPages/UpdateProductPopup";
 import AdminResDashboard from "./components/AdminComponents/AdminResDashboard";
@@ -50,6 +51,7 @@ const App = () => {
         <UpdateProductPopup setUpdateProduct={setUpdateProduct} />
       ) : null}
       <div className={location.pathname !== "/order-history" ? "app" : ""}>
+<<<<<<< HEAD
         <StoreContextProvider>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -74,6 +76,60 @@ const App = () => {
             <Route path="/adminres/feedback-rating" element={<AdminResFeedbackRating />} />
           </Routes>
         </StoreContextProvider>
+=======
+        <>
+          <StoreContextProvider>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/authentication/login" element={<Login />} />
+              <Route path="/authentication/register" element={<Register />} />
+              <Route
+                path="/authentication/forgetPassword"
+                element={<ForgetPassword />}
+              />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/order" element={<PlaceOrder />} />
+              <Route path="/myorder" element={<MyOrders />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route
+                path="/admin/revenue-report"
+                element={<AdminRevenueReport />}
+              />
+              <Route path="/admin/users" element={<AdminUsers />} />
+              <Route path="/admin/product" element={<AdminProduct />} />
+              <Route
+                path="/admin/feedback-rating"
+                element={<AdminFeedbackRating />}
+              />
+              <Route path="/detail/:food_id" element={<Detail />} />
+              <Route path="/order-history" element={<OrderHistory />} />
+              <Route
+                path="/adminres/dashboard"
+                element={<AdminResDashboard />}
+              />
+              <Route
+                path="/adminres/revenue-report"
+                element={<AdminResRevenueReport />}
+              />
+              <Route
+                path="/adminres/manage"
+                element={
+                  <AdminResProduct
+                    setCreateProduct={setCreateProduct}
+                    setUpdateProduct={setUpdateProduct}
+                  />
+                }
+              />
+              <Route
+                path="/adminres/feedback-rating"
+                element={<AdminResFeedbackRating />}
+              />
+            </Routes>
+          </StoreContextProvider>
+        </>
+>>>>>>> hung
       </div>
       {!hideFooter && <Footer />}
     </>
