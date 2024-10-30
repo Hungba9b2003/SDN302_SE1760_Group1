@@ -55,6 +55,7 @@ router.post("/upload", upload.single("cardIdPhoto"), (req, res) => {
   });
 });
 
+// Các routes cho Authentication
 router.post(
   "/register",
   upload.fields([{ name: "cardIdPhoto", maxCount: 1 }]),

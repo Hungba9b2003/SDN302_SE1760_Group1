@@ -80,7 +80,7 @@ const Navbar = ({ setShowLogin }) => {
             </a>
 
             <Link
-              to="/adminres/dashboard"
+              to="/adminres/manage"
               className={`${menu === "manage" ? "active" : ""}`}
             >
               restaurant

@@ -51,8 +51,16 @@ const Login = () => {
     // }
     try {
       const response = await axios.post(
+<<<<<<< HEAD
         "http://localhost:5000/api/auth/login",
         { token, role, email, password }
+=======
+        "http://localhost:6969/api/auth/login",
+        {
+          username,
+          password,
+        }
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
       );
       if (response.data.token) {
         localStorage.setItem("token", response.data.token); // Lưu token vào localStorage

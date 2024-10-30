@@ -26,14 +26,22 @@ import StoreContextProvider from "./Context/StoreContext";
 import OrderHistory from "./components/OrderHistory/OrderHistory";
 
 import "./index.css";
+import AdminResCategory from "./pages/AdminResPages/AdminResCategory";
 
 const App = () => {
   const location = useLocation();
   const [createProduct, setCreateProduct] = useState(false);
   const [updateProduct, setUpdateProduct] = useState(false);
+
+  // Điều kiện để ẩn Navbar ở các trang admin
+  const hideNavbar = location.pathname.includes("/admin") || location.pathname.includes("/adminres");
+
+  // Điều kiện để ẩn Footer ở các trang authentication và adminres
+  const hideFooter = location.pathname.includes("/authentication") || location.pathname.includes("/adminres");
+
   return (
     <>
-      {!location.pathname.includes("/admin") && <Navbar />}
+      {!hideNavbar && <Navbar />}
 
       {createProduct ? (
         <CreateProductPopup setCreateProduct={setCreateProduct} />
@@ -42,59 +50,32 @@ const App = () => {
         <UpdateProductPopup setUpdateProduct={setUpdateProduct} />
       ) : null}
       <div className={location.pathname !== "/order-history" ? "app" : ""}>
-        <>
-          <StoreContextProvider>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/authentication/login" element={<Login />} />
-              <Route path="/authentication/register" element={<Register />} />
-              <Route
-                path="/authentication/forgetPassword"
-                element={<ForgetPassword />}
-              />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/order" element={<PlaceOrder />} />
-              <Route path="/myorder" element={<MyOrders />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route
-                path="/admin/revenue-report"
-                element={<AdminRevenueReport />}
-              />
-              <Route path="/admin/users" element={<AdminUsers />} />
-              <Route path="/admin/product" element={<AdminProduct />} />
-              <Route
-                path="/admin/feedback-rating"
-                element={<AdminFeedbackRating />}
-              />
-              <Route path="/detail/:food_id" element={<Detail />} />
-              <Route path="/order-history" element={<OrderHistory />} />
-              <Route
-                path="/adminres/dashboard"
-                element={<AdminResDashboard />}
-              />
-              <Route
-                path="/adminres/revenue-report"
-                element={<AdminResRevenueReport />}
-              />
-              <Route
-                path="/adminres/manage"
-                element={
-                  <AdminResProduct
-                    setCreateProduct={setCreateProduct}
-                    setUpdateProduct={setUpdateProduct}
-                  />
-                }
-              />
-              <Route
-                path="/adminres/feedback-rating"
-                element={<AdminResFeedbackRating />}
-              />
-            </Routes>
-          </StoreContextProvider>
-        </>
+        <StoreContextProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/authentication/login" element={<Login />} />
+            <Route path="/authentication/register" element={<Register />} />
+            <Route path="/authentication/forgetPassword" element={<ForgetPassword />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/order" element={<PlaceOrder />} />
+            <Route path="/myorder" element={<MyOrders />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/revenue-report" element={<AdminRevenueReport />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/product" element={<AdminProduct />} />
+            <Route path="/admin/feedback-rating" element={<AdminFeedbackRating />} />
+            <Route path="/detail/:food_id" element={<Detail />} />
+            <Route path="/order-history" element={<OrderHistory />} />
+            <Route path="/adminres/dashboard" element={<AdminResDashboard />} />
+            <Route path="/adminres/revenue-report" element={<AdminResRevenueReport />} />
+            <Route path="/adminres/manage" element={<AdminResProduct setCreateProduct={setCreateProduct} setUpdateProduct={setUpdateProduct} />} />
+            <Route path="/adminres/category" element={<AdminResCategory />} />
+            <Route path="/adminres/feedback-rating" element={<AdminResFeedbackRating />} />
+          </Routes>
+        </StoreContextProvider>
       </div>
-      {!location.pathname.includes("/authentication") && <Footer />}
+      {!hideFooter && <Footer />}
     </>
   );
 };
