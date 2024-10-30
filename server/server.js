@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const connectDB = require("./config/database");
 const connectDB1 = require("./config/mydatabase");
-const authRoutes = require("./routes/authRouter");
 const app = express();
 const multer = require("multer");
 const morgan = require("morgan");
@@ -12,7 +11,7 @@ const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const path = require("path");
 // Kết nối database
-const connectDB = require("./config/database");
+
 const mydatabase = require("./config/mydatabase");
 // Routes
 const authRoutes = require("./routes/authRouter");
@@ -21,7 +20,7 @@ const manageRoutes = require("./routes/manageRouter");
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
-const bodyParser = require("body-parser");
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -46,7 +45,6 @@ app.post("/api/decode-token", (req, res) => {
 app.use("/assets", express.static("src/assets"));
 app.use("/api/auth", authRoutes);
 
-const dotenv = require("dotenv");
 dotenv.config();
 
 // Cấu hình session
