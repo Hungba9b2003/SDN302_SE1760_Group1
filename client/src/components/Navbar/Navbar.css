@@ -120,3 +120,32 @@
   padding: 10px;
   border: 2px solid #ff4c24;
 }
+
+.search-suggestions {
+  position: absolute; /* Giữ phần gợi ý trong vùng tìm kiếm */
+  top: 100%; /* Đặt ngay dưới ô tìm kiếm */
+  left: 10;
+  width: 15%; /* Chiếm toàn bộ chiều rộng của phần tử cha */
+  max-height: 200px; /* Giới hạn chiều cao để tránh tràn màn hình */
+  overflow-y: auto; /* Cho phép cuộn nếu có nhiều kết quả */
+  background-color: #fff; /* Đặt nền trắng để tách biệt với các phần khác */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Thêm đổ bóng để tạo chiều sâu */
+  z-index: 1000; /* Đảm bảo phần gợi ý nằm trên các phần khác */
+}
+
+.search-suggestions .suggestion-item {
+  display: block; /* Đảm bảo mỗi mục gợi ý nằm trên một hàng */
+  padding: 8px 12px; /* Tạo khoảng cách dễ nhìn */
+  border-bottom: 1px solid #eee; /* Đường viền dưới từng mục */
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.search-suggestions .suggestion-item:last-child {
+  border-bottom: none; /* Bỏ đường viền dưới cùng */
+}
+
+.search-suggestions .suggestion-item:hover {
+  background-color: #f2f2f2; /* Đổi màu khi hover để tạo tương tác */
+}

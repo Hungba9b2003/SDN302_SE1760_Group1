@@ -12,7 +12,9 @@ const FoodDisplay = ({ category }) => {
       <div className="food-display-list">
         {foodListAPI.map((item) => {
           // Log ra categories để kiểm tra
-          console.log("item?.categories:", item?.categories);
+          {
+            /* console.log("item?.categories:", item?.categories); */
+          }
 
           // Kiểm tra nếu category là "All" hoặc nếu categories là mảng và có ít nhất một category trong mảng categories khớp với category
           const isInCategory =

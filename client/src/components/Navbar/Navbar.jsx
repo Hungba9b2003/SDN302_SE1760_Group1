@@ -18,15 +18,17 @@ const Navbar = ({ setShowLogin }) => {
   };
 
   // Lọc các sản phẩm dựa trên từ khóa tìm kiếm
-  const searchResults = foodListAPI.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const searchResults = searchTerm
+    ? foodListAPI.filter((item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
 
   // Hàm xử lý khi nhấn tìm kiếm
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchResults.length > 0) {
-      navigate(`/detail/${searchResults[0]._id}`); // Điều hướng đến trang chi tiết sản phẩm đầu tiên
+      navigate(`/detail/${searchResults._id}`); // Điều hướng đến trang chi tiết sản phẩm đầu tiên
     }
   };
 
@@ -91,6 +93,7 @@ const Navbar = ({ setShowLogin }) => {
                 {/* Hiển thị danh sách gợi ý khi có từ khóa tìm kiếm */}
                 {searchTerm && (
                   <div className="search-suggestions">
+                    {" "}
                     {searchResults.length > 0 ? (
                       searchResults.map((item) => (
                         <Link
