@@ -1,7 +1,5 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const connectDB = require("./config/database");
 const connectDB1 = require("./config/mydatabase");
@@ -9,6 +7,13 @@ const authRoutes = require("./routes/authRouter");
 const app = express();
 const multer = require("multer");
 const morgan = require("morgan");
+const session = require("express-session");
+const dotenv = require("dotenv");
+const path = require("path");
+// Kết nối database
+const mydatabase = require("./config/mydatabase");
+// Routes
+const manageRoutes = require("./routes/manageRouter");
 
 app.use(morgan("dev"));
 app.use(express.json());
@@ -38,8 +43,25 @@ app.post("/api/decode-token", (req, res) => {
 app.use("/assets", express.static("src/assets"));
 app.use("/api/auth", authRoutes);
 
-const dotenv = require("dotenv");
-dotenv.config();
+// Cấu hình session
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "your_secret_key",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // `secure: false` cho môi trường phát triển
+  })
+);
+
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/manage", manageRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use((req, res, next) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+// Khởi động server
 const PORT = process.env.PORT || 6969;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

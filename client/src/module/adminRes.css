@@ -1,10 +1,16 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
 
 
 .adminres-container {
   display: flex;
   flex-direction: column;
+<<<<<<< HEAD
   height: 100vh;
+=======
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
 }
 
 .adminres-navbar {
@@ -48,11 +54,16 @@
 
 .adminres-sidebar {
   width: 200px;
+<<<<<<< HEAD
+=======
+  height: auto;
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
   background-color: #f4f4f4;
   padding: 15px;
 }
 
 .adminres-sidebar ul {
+<<<<<<< HEAD
 =======
 /* admin.css */
 
@@ -139,11 +150,16 @@
 
 .admin-sidebar ul {
 >>>>>>> hoanlq
+=======
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
   list-style: none;
   padding: 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
 .adminres-sidebar ul li {
   margin: 10px 0;
 }
@@ -158,6 +174,7 @@
   margin-bottom: 20px;
 }
 
+<<<<<<< HEAD
 =======
 .admin-sidebar ul li {
   margin: 10px 0;
@@ -170,6 +187,8 @@
 
 /* Add product form */
 >>>>>>> hoanlq
+=======
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
 .add-product-form input,
 .add-product-form textarea {
   display: block;
@@ -183,12 +202,17 @@
 .add-product-form button {
   padding: 10px 15px;
 <<<<<<< HEAD
+<<<<<<< HEAD
   background-color: #007bff; 
   color: white;
 =======
   background-color: var(--orange); /* Main orange color */
   color: var(--white);
 >>>>>>> hoanlq
+=======
+  background-color: #007bff; 
+  color: white;
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -196,6 +220,9 @@
 
 .add-product-form button:hover {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
   background-color: #0056b3; 
 }
 
@@ -207,6 +234,7 @@
 .product-table th,
 .product-table td {
   padding: 10px;
+<<<<<<< HEAD
 =======
   background-color: var(--orange-dark); /* Darker orange on hover */
 }
@@ -225,11 +253,16 @@
 .table td {
   padding: 12px 15px;
 >>>>>>> hoanlq
+=======
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
   border: 1px solid #ccc;
   text-align: left;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
 .product-table th {
   background-color: #f2f2f2;
 }
@@ -294,6 +327,7 @@
 
 
 .adminres-content {
+<<<<<<< HEAD
 =======
 .product-table th,
 .table th {
@@ -321,17 +355,23 @@
 /* Admin content */
 .admin-content {
 >>>>>>> hoanlq
+=======
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
   display: flex;
   flex: 1;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
 .adminres-main {
   flex: 1;
   padding: 20px;
 }
 
 .adminres-stats {
+<<<<<<< HEAD
 =======
 .admin-main {
   flex: 1;
@@ -342,6 +382,8 @@
 
 .admin-stats {
 >>>>>>> hoanlq
+=======
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
   display: flex;
   gap: 20px;
 }
@@ -349,15 +391,20 @@
 .stat-card {
   flex: 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
   background-color: #e2e2e2;
 =======
   background-color: var(--orange); /* Main orange color */
 >>>>>>> hoanlq
+=======
+  background-color: #e2e2e2;
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
   padding: 20px;
   border-radius: 5px;
   text-align: center;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 h1 {
   margin-bottom: 20px;
@@ -411,3 +458,10 @@ h1 {
   }
 >>>>>>> hoanlq
 }
+=======
+h1 {
+  margin-bottom: 20px;
+}
+
+
+>>>>>>> 661e952557896ce80133093d74a04c98721d8dd0
