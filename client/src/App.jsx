@@ -16,10 +16,7 @@ import AdminUsers from "./pages/AdminPages/AdminUser";
 import AdminFeedbackRating from "./pages/AdminPages/AdminFeedbackRating";
 import AdminProduct from "./pages/AdminPages/AdminProduct";
 import Detail from "./pages/Detail/Detail";
-<<<<<<< HEAD
 import Checkout from "./pages/Checkout/Checkout";
-=======
->>>>>>> 1d21618b4dbc0f48b9c0461d695fdff2bc0593a8
 import CreateProductPopup from "./pages/AdminResPages/CreateProductPopup";
 import UpdateProductPopup from "./pages/AdminResPages/UpdateProductPopup";
 import AdminResDashboard from "./components/AdminComponents/AdminResDashboard";

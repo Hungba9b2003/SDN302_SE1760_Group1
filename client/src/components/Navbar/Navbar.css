@@ -14,20 +14,12 @@
 }
 
 .navbar-menu {
-<<<<<<< HEAD
     margin-bottom: -1rem;
     display: flex;
     list-style: none;
     gap: 20px;
     color: #49557E;
     font-size: 18px;
-=======
-  display: flex;
-  list-style: none;
-  gap: 20px;
-  color: #49557e;
-  font-size: 18px;
->>>>>>> 1d21618b4dbc0f48b9c0461d695fdff2bc0593a8
 }
 
 .navbar-menu .active {

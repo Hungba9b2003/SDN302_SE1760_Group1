@@ -1,39 +1,6 @@
 const mongoose = require("mongoose");
 
 const ReviewSchema = new mongoose.Schema(
-<<<<<<< HEAD
-    {
-        dishId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Dish",
-            required: true,
-        },
-        customerId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Customer",
-            required: true,
-        },
-        date: {
-            type: Date,
-            default: Date.now,
-        },
-        description: {
-            type: String,
-        },
-        rating: {
-            type: Number,
-            required: true,
-        },
-    },
-    {
-        collection: "Review", // Tên collection trong MongoDB
-    }
-);
-
-const Review = mongoose.model("review", ReviewSchema);
-
-module.exports = Review;
-=======
   {
     _id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -74,4 +41,3 @@ module.exports = Review;
 const Review = mongoose.model("Review", ReviewSchema);
 
 module.exports = Review;
->>>>>>> 1d21618b4dbc0f48b9c0461d695fdff2bc0593a8
