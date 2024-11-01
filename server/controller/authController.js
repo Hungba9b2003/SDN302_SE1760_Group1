@@ -78,7 +78,7 @@ exports.login = async (req, res) => {
     }
 
     const account = await Account.findOne({ email: email });
-
+    console.log(account.email);
     if (!account || account.status == null) {
       return res.status(400).json({ message: "Email is not exist !" });
     }
@@ -94,7 +94,7 @@ exports.login = async (req, res) => {
     const token = jwt.sign(
       { email: account.email, password: account.password, role: account.role },
       process.env.JWT_SECRET,
-      { expiresIn: "20m" }
+      { expiresIn: "3d" }
     );
     await account.save();
     res.json({ token });

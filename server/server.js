@@ -9,6 +9,7 @@ const morgan = require("morgan");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
+const { checkToken } = require("./middlewares/authMiddleware");
 const path = require("path");
 const authRoutes = require("./routes/authRouter");
 const manageRoutes = require("./routes/manageRouter");
@@ -39,6 +40,8 @@ app.post("/api/decode-token", (req, res) => {
 
 app.use("/assets", express.static("src/assets"));
 app.use("/api/auth", authRoutes);
+
+app.use("/check-token", checkToken);
 
 // Cấu hình session
 app.use(

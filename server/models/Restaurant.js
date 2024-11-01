@@ -43,7 +43,7 @@ const RestaurantSchema = new mongoose.Schema(
     },
   },
   {
-    collection: "restaurants",
+    collection: "Restaurant",
     strict: false,
   }
 );

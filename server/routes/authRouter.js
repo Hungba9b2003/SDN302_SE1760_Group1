@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const authMiddleware = require("../middlewares/authMiddleware"); // Ensure this path is correct
+const { authMiddleware } = require("../middlewares/authMiddleware"); // Ensure this path is correct
 const {
   isAuthenticated,
   checkToken,
