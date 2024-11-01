@@ -6,11 +6,11 @@ import { StoreContext } from "../../Context/StoreContext";
 
 const Navbar = ({ setShowLogin }) => {
   const [menu, setMenu] = useState("home");
-  const { getTotalCartAmount, foodListAPI } = useContext(StoreContext);
+  const { getTotalCartAmount, foodListAPI, setSearchQuery, searchQuery } =
+    useContext(StoreContext);
   const location = useLocation();
   const navigate = useNavigate();
   const [isSearchVisible, setIsSearchVisible] = useState(false); // State quản lý input tìm kiếm
-  const [searchTerm, setSearchTerm] = useState(""); // State quản lý giá trị tìm kiếm
 
   // Hàm xử lý khi nhấn vào biểu tượng tìm kiếm
   const toggleSearchInput = () => {
@@ -18,9 +18,9 @@ const Navbar = ({ setShowLogin }) => {
   };
 
   // Lọc các sản phẩm dựa trên từ khóa tìm kiếm
-  const searchResults = searchTerm
+  const searchResults = searchQuery
     ? foodListAPI.filter((item) =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : [];
 
@@ -28,7 +28,7 @@ const Navbar = ({ setShowLogin }) => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchResults.length > 0) {
-      navigate(`/detail/${searchResults._id}`); // Điều hướng đến trang chi tiết sản phẩm đầu tiên
+      navigate(`/detail/${searchResults[0]._id}`); // Điều hướng đến trang chi tiết sản phẩm đầu tiên
     }
   };
 
@@ -82,8 +82,8 @@ const Navbar = ({ setShowLogin }) => {
                 <form onSubmit={handleSearch} className="search-form">
                   <input
                     type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Tìm kiếm sản phẩm..."
                     className="search-input"
                   />
@@ -91,7 +91,7 @@ const Navbar = ({ setShowLogin }) => {
                 </form>
 
                 {/* Hiển thị danh sách gợi ý khi có từ khóa tìm kiếm */}
-                {searchTerm && (
+                {searchQuery && (
                   <div className="search-suggestions">
                     {" "}
                     {searchResults.length > 0 ? (

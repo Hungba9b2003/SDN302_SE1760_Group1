@@ -8,6 +8,7 @@ const StoreContextProvider = (props) => {
   const [foodListAPI, setFoodListAPI] = useState([]); // State để lưu food_list từ API
   const [menuListAPI, setMenuListAPI] = useState([]); // State để lưu menu_list từ API
   const [restaurantListAPI, setRestaurantListAPI] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   // Gọi API để lấy dữ liệu từ http://localhost:9999/
   useEffect(() => {
     const fetchData = async () => {
@@ -83,6 +84,8 @@ const StoreContextProvider = (props) => {
   };
 
   const contextValue = {
+    searchQuery,
+    setSearchQuery,
     restaurantListAPI,
     menuListAPI,
     foodListAPI,

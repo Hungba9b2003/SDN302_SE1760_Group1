@@ -4,7 +4,7 @@ import FoodItem from "../FoodItem/FoodItem";
 import { StoreContext } from "../../Context/StoreContext";
 
 const FoodDisplay = ({ category }) => {
-  const { foodListAPI } = useContext(StoreContext);
+  const { foodListAPI, searchQuery } = useContext(StoreContext);
 
   return (
     <div className="food-display" id="food-display">
@@ -22,7 +22,11 @@ const FoodDisplay = ({ category }) => {
             (Array.isArray(item?.categories) &&
               item.categories.some((cat) => cat.name === category));
 
-          if (isInCategory || category === item?.categories?.name) {
+          if (
+            isInCategory ||
+            category === item?.categories?.name ||
+            searchQuery === item?.name
+          ) {
             return (
               <FoodItem
                 key={item._id}
