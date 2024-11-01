@@ -23,10 +23,11 @@ import AdminResDashboard from "./components/AdminComponents/AdminResDashboard";
 import AdminResRevenueReport from "./pages/AdminResPages/AdminResRevenueReport";
 import AdminResFeedbackRating from "./pages/AdminResPages/AdminResFeedbackRating";
 import AdminResProduct from "./pages/AdminResPages/AdminResProduct";
-import StoreContextProvider from "./Context/StoreContext";
 import OrderHistory from "./components/OrderHistory/OrderHistory";
 import "./index.css";
+import StoreContextProvider from "./Context/StoreContext";
 import AdminResCategory from "./pages/AdminResPages/AdminResCategory";
+// import "bootstrap/dist/css/bootstrap.min.css";
 
 const App = () => {
   const location = useLocation();

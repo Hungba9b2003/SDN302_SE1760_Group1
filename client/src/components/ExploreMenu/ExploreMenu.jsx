@@ -3,7 +3,7 @@ import "./ExploreMenu.css";
 import { StoreContext } from "../../Context/StoreContext";
 
 const ExploreMenu = ({ category, setCategory }) => {
-  const { menu_list, menuListAPI } = useContext(StoreContext);
+  const { menuList } = useContext(StoreContext);
 
   return (
     <div className="explore-menu" id="explore-menu">
@@ -14,7 +14,7 @@ const ExploreMenu = ({ category, setCategory }) => {
         one delicious meal at a time.
       </p>
       <div className="explore-menu-list">
-        {menuListAPI.map((item, index) => {
+        {menuList.map((item, index) => {
           return (
             <div
               onClick={() =>
@@ -24,7 +24,7 @@ const ExploreMenu = ({ category, setCategory }) => {
               className="explore-menu-list-item"
             >
               <img
-                src={item.menu_image}
+                src={item.image}
                 className={category === item.name ? "active" : ""}
                 alt=""
               />

@@ -1,12 +1,40 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import "./Cart.css";
 import { StoreContext } from "../../Context/StoreContext";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const { cartItems, removeFromCart, getTotalCartAmount, foodListAPI } =
+  const { cartItems, foodList, updateCart, getTotalCartAmount } =
     useContext(StoreContext);
   const navigate = useNavigate();
+
+  // Local state to track item quantities before updating cart
+  const [quantities, setQuantities] = useState(
+    Object.keys(cartItems).reduce((acc, itemId) => {
+      acc[itemId] = cartItems[itemId];
+      return acc;
+    }, {})
+  );
+
+  const handleQuantityChange = (itemId, newQuantity) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [itemId]: newQuantity,
+    }));
+  };
+
+  const handleQuantityBlur = (itemId) => {
+    const newQuantity = quantities[itemId];
+    if (newQuantity > 0) {
+      updateCart(itemId, newQuantity);
+    } else {
+      updateCart(itemId, 0); // Remove item if quantity is 0
+    }
+  };
+
+  const handleRemoveItem = (itemId) => {
+    updateCart(itemId, 0); // Remove item by setting quantity to 0
+  };
 
   return (
     <div className="cart">
@@ -17,27 +45,28 @@ const Cart = () => {
         </div>
         <br />
         <hr />
-        {foodListAPI.map((item, index) => {
-          const quantity = cartItems[item._id] || 0; // Lấy số lượng từ giỏ hàng, mặc định là 0 nếu không có
-          if (quantity > 0) {
+        {foodList.map((item, index) => {
+          if (cartItems[item._id] > 0) {
             return (
               <div key={index}>
                 <div className="cart-items-title cart-items-item">
-                  <img
-                    src={
-                      Object.values(item.image[0])
-                        .join("")
-                        .match(/.*\.(jpg|png)/i)?.[0] || ""
-                    }
-                    alt={item.name}
-                  />
+                  <img src={item.image} alt="" />
                   <p>{item.name}</p>
                   <p>${item.price}</p>
-                  <div>{quantity}</div>
-                  <p>${item.price * quantity}</p>
+                  <input
+                    type="number"
+                    min="0"
+                    value={quantities[item._id] || 0}
+                    onChange={(e) =>
+                      handleQuantityChange(item._id, parseInt(e.target.value))
+                    }
+                    onBlur={() => handleQuantityBlur(item._id)}
+                    className="cart-item-quantity-input"
+                  />
+                  <p>${item.price * cartItems[item._id]}</p>
                   <p
                     className="cart-items-remove-icon"
-                    onClick={() => removeFromCart(item._id)}
+                    onClick={() => handleRemoveItem(item._id)}
                   >
                     x
                   </p>
@@ -46,7 +75,7 @@ const Cart = () => {
               </div>
             );
           }
-          return null; // Không hiển thị nếu số lượng bằng 0
+          return null;
         })}
       </div>
       <div className="cart-bottom">
@@ -70,7 +99,7 @@ const Cart = () => {
               </b>
             </div>
           </div>
-          <button onClick={() => navigate("/order")}>
+          <button onClick={() => alert("Checkout is disabled for now.")}>
             PROCEED TO CHECKOUT
           </button>
         </div>

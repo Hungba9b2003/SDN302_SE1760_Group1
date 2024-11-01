@@ -6,22 +6,39 @@ const connectDB1 = require("./config/mydatabase");
 const app = express();
 const multer = require("multer");
 const morgan = require("morgan");
+<<<<<<< HEAD
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
-const { checkToken } = require("./middlewares/authMiddleware");
+const { checkToken,authMiddleware } = require("./middlewares/authMiddleware");
 const path = require("path");
 const authRoutes = require("./routes/authRouter");
 const manageRoutes = require("./routes/manageRouter");
 const detailRouter = require("./routes/detailRouter");
 const getAllData = require("./controller/getAllDataController");
 const Account = require("./models/Account");
+const DishRouter = require("./routes/dish.router");
+const OrderRouter = require("./routes/order.router");
+const CustomerRouter = require("./routes/Customer.router");
+const authMiddleware = require("./middlewares/authMiddleware");
+=======
+const authMiddleware = require("./middlewares/authMiddleware");
+const dotenv = require("dotenv");
+const CustomerRouter = require("./routes/Customer.router");
+const OrderRouter = require("./routes/order.router");
+const bodyParser = require("body-parser");
+const DishRouter = require("./routes/dish.router");
+>>>>>>> 9c51192ad0fe223a8d9ec397e444deae0b7c172a
 
 app.use(bodyParser.json());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
+<<<<<<< HEAD
 
+=======
+app.use(bodyParser.json());
+>>>>>>> 9c51192ad0fe223a8d9ec397e444deae0b7c172a
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // connectDB();
@@ -44,7 +61,11 @@ app.post("/api/decode-token", (req, res) => {
 
 app.use("/assets", express.static("src/assets"));
 app.use("/api/auth", authRoutes);
+app.use("/api/customer", authMiddleware, CustomerRouter);
+app.use("/api/order", authMiddleware, OrderRouter);
+app.use("/api/dish", DishRouter);
 
+<<<<<<< HEAD
 app.use("/check-token", checkToken);
 
 // Cấu hình session
@@ -81,6 +102,8 @@ app.use((req, res, next) => {
 });
 
 // Khởi động server
+=======
+>>>>>>> 9c51192ad0fe223a8d9ec397e444deae0b7c172a
 const PORT = process.env.PORT || 6969;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

@@ -1,96 +1,105 @@
 import { createContext, useEffect, useState } from "react";
-import { food_list, menu_list } from "../assets/assets";
-import axios from "axios"; // Import axios
+import axios from "axios";
+
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
-  const [foodListAPI, setFoodListAPI] = useState([]); // State để lưu food_list từ API
-  const [menuListAPI, setMenuListAPI] = useState([]); // State để lưu menu_list từ API
-  const [restaurantListAPI, setRestaurantListAPI] = useState([]);
-  // Gọi API để lấy dữ liệu từ http://localhost:9999/
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Gọi API để lấy danh sách thực phẩm
-        const foodResponse = await axios.get("http://localhost:9999/");
-        if (foodResponse?.data?.data?.dishs) {
-          setFoodListAPI(foodResponse.data.data.dishs); // Cập nhật state với dữ liệu từ API
-        } else {
-          console.warn("Không tìm thấy 'Foods' trong dữ liệu trả về từ API.");
-        }
+  const [ordersData, setOrdersData] = useState({});
+  const [menuList, setMenuList] = useState([]);
+  const [foodList, setFoodList] = useState([]);
 
-        // Gọi API để lấy danh sách menu
-        const menuResponse = await axios.get("http://localhost:9999");
-        if (menuResponse?.data?.data?.categories) {
-          setMenuListAPI(menuResponse.data.data.categories); // Cập nhật state với dữ liệu từ API
-        } else {
-          console.warn(
-            "Không tìm thấy 'categories' trong dữ liệu trả về từ API."
-          );
-        }
+  const token = localStorage.getItem("token");
 
-        // Gọi API để lấy thông tin nhà hàng
-        const restaurant = await axios.get("http://localhost:9999");
-        if (restaurant?.data?.data?.restaurants) {
-          setRestaurantListAPI(menuResponse.data.data.restaurants); // Cập nhật state với dữ liệu từ API
-        } else {
-          console.warn(
-            "Không tìm thấy 'categories' trong dữ liệu trả về từ API."
-          );
-        }
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu từ API:", error);
-      }
-    };
+  const axiosInstance = axios.create({
+    baseURL: "http://localhost:6969/api",
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
 
-    fetchData();
-  }, []); // Chỉ chạy một lần sau khi component được render
-
-  const addToCart = (itemId) => {
-    if (!cartItems[itemId]) {
-      setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
-    } else {
-      setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
+  const fetchMenuList = async () => {
+    try {
+      const response = await axiosInstance.get("/dish/categories");
+      setMenuList(response.data.categories);
+    } catch (error) {
+      console.error("Error fetching menu categories:", error);
     }
   };
 
-  const removeFromCart = (itemId) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
+  const fetchFoodList = async () => {
+    try {
+      const response = await axiosInstance.get("/dish");
+      setFoodList(response.data.dishes);
+    } catch (error) {
+      console.error("Error fetching food list:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMenuList();
+    fetchFoodList();
+  }, [token]);
+
+  const updateCart = async (itemId, newQuantity) => {
+    setCartItems((prev) => {
+      const updatedCart = { ...prev };
+
+      if (newQuantity > 0) {
+        updatedCart[itemId] = newQuantity;
+      } else {
+        delete updatedCart[itemId];
+      }
+
+      // Call API if token exists, otherwise only update the state
+      if (token) {
+        const cartItemsArray = Object.keys(updatedCart).map((dishId) => ({
+          dishId,
+          quantity: updatedCart[dishId],
+        }));
+
+        axiosInstance
+          .post("/cart", { cartItems: cartItemsArray })
+          .catch((error) => {
+            console.error("Error updating cart:", error);
+          });
+      }
+
+      return updatedCart;
+    });
   };
 
   const getTotalCartAmount = () => {
-    let totalAmount = 0;
-
-    for (const itemId in cartItems) {
-      const quantity = cartItems[itemId];
-      if (quantity > 0) {
-        // Find the item in foodListAPI using the food ID
-        const itemInfo = foodListAPI.find((product) => product._id === itemId);
-
-        // Ensure itemInfo exists before accessing its properties
-        if (itemInfo) {
-          totalAmount += itemInfo.price * quantity; // Adjusting to use the correct property for price
-        }
-      }
-    }
-
-    return totalAmount;
+    return Object.keys(cartItems).reduce((total, itemId) => {
+      const itemInfo = foodList.find((dish) => dish._id === itemId);
+      return total + (itemInfo ? itemInfo.price * cartItems[itemId] : 0);
+    }, 0);
   };
 
-  const placeOrder = (deliveryData) => {
-    console.log(deliveryData);
+  const placeOrder = async (deliveryData) => {
+    if (token) {
+      try {
+        const response = await axiosInstance.post("/order/create", {
+          restaurantId: deliveryData.restaurantId,
+          items: cartItems,
+        });
+        setOrdersData((prev) => ({
+          ...prev,
+          [response.data.order._id]: response.data.order,
+        }));
+        setCartItems({});
+        console.log("Order placed successfully:", response.data);
+      } catch (error) {
+        console.error("Error placing order:", error);
+      }
+    } else {
+      console.warn("User must be logged in to place an order.");
+    }
   };
 
   const contextValue = {
-    restaurantListAPI,
-    menuListAPI,
-    foodListAPI,
-    food_list,
-    menu_list,
+    foodList,
+    menuList,
     cartItems,
-    addToCart,
-    removeFromCart,
+    updateCart,
     getTotalCartAmount,
     placeOrder,
   };

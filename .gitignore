@@ -3,6 +3,7 @@ node_modules/
 client/node_modules/
 server/node_modules/
 server/mydatabase.js
+
 # Bỏ qua thư mục build ở client (nếu có)
 client/build/
 

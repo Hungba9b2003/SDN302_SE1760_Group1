@@ -4,16 +4,27 @@ import FoodItem from "../FoodItem/FoodItem";
 import { StoreContext } from "../../Context/StoreContext";
 
 const FoodDisplay = ({ category }) => {
-  const { foodListAPI } = useContext(StoreContext);
+  const { foodList } = useContext(StoreContext);
 
   return (
     <div className="food-display" id="food-display">
       <h2>Top dishes near you</h2>
       <div className="food-display-list">
-        {foodListAPI.map((item) => {
-          // Log ra categories để kiểm tra
-          {
-            /* console.log("item?.categories:", item?.categories); */
+        {foodList.map((item) => {
+          if (category === "All" || category === item.categoryId.name) {
+            console.log(item);
+
+            return (
+              <FoodItem
+                key={item._id}
+                image={item.image}
+                name={item.name}
+                desc={item.description}
+                price={item.price}
+                id={item._id}
+                category={item.categoryId.name}
+              />
+            );
           }
 
           // Kiểm tra nếu category là "All" hoặc nếu categories là mảng và có ít nhất một category trong mảng categories khớp với category
