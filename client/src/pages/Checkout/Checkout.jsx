@@ -4,7 +4,7 @@ import { StoreContext } from "../../Context/StoreContext";
 import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
-  const { cartItems, food_list, removeFromCart, getTotalCartAmount } =
+  const { cartItems, removeFromCart, getTotalCartAmount, foodListAPI } =
     useContext(StoreContext);
   const navigate = useNavigate();
 
@@ -17,19 +17,35 @@ const Checkout = () => {
         </div>
         <br />
         <hr />
-        {food_list.map((item, index) => {
-          if (cartItems[item.food_id] > 0) {
+        {foodListAPI.map((item, index) => {
+          const quantity = cartItems[item._id] || 0; // Lấy số lượng từ giỏ hàng, mặc định là 0 nếu không có
+          if (quantity > 0) {
             return (
               <div key={index}>
                 <div className="cart-items-title cart-items-item">
-                  <img src={item.food_image} alt="" />
-                  <p>{item.food_name}</p>
-                  <p>${item.food_price}</p>
-                  <div>{cartItems[item.food_id]}</div>
-                  <p>${item.food_price * cartItems[item.food_id]}</p>
+                  {/* Hiển thị hình ảnh đầu tiên trong danh sách ảnh */}
+                  <img
+                    src={
+                      Object.values(item.image[0]).join("").split(".jpg")[0] +
+                      ".jpg"
+                    }
+                    alt={item.name}
+                  />
+
+                  {/* Hiển thị tên món ăn */}
+                  <p>{item.name}</p>
+
+                  {/* Hiển thị giá của món ăn */}
+                  <p>${item.price}</p>
+
+                  {/* Hiển thị số lượng của món ăn trong giỏ */}
+                  <div>{quantity}</div>
+
+                  <p>${item.price * quantity}</p>
+
                   <p
                     className="cart-items-remove-icon"
-                    onClick={() => removeFromCart(item.food_id)}
+                    onClick={() => removeFromCart(item._id)}
                   >
                     x
                   </p>
@@ -38,6 +54,7 @@ const Checkout = () => {
               </div>
             );
           }
+          return null;
         })}
       </div>
       <div className="cart-bottom">
