@@ -17,6 +17,7 @@ const CreateProductPopup = ({ setCreateProduct }) => {
   const [useNewCategory, setUseNewCategory] = useState(false);
   const [error, setError] = useState('');
   const [formErrors, setFormErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -72,35 +73,42 @@ const CreateProductPopup = ({ setCreateProduct }) => {
   const handleCreate = async () => {
     const errors = validateForm();
     setFormErrors(errors);
-
+  
     if (Object.keys(errors).length > 0 || error) {
       return;
     }
-
+  
     const formData = new FormData();
     formData.append('name', name);
     formData.append('price', price);
     formData.append('description', description);
     formData.append('discount', discount);
-    
+  
     const selectedCategory = useNewCategory ? newCategory : category;
     formData.append('categories', selectedCategory);
-
+  
     if (image && image.length > 0) {
       image.forEach((img) => formData.append('image', img));
     }
-
+  
+    setIsLoading(true);
     try {
+      // Create the dish and automatically add it to the restaurant's menu
       const response = await axios.post('http://localhost:5000/manage/create-dish', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       });
-      console.log(response.data);
-      alert('Product created successfully');
+  
+      alert('Product created and added to the menu successfully');
       window.location.reload();
       setCreateProduct(false);
     } catch (error) {
       console.error('Error creating dish:', error);
       alert('Failed to create product');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -112,6 +120,7 @@ const CreateProductPopup = ({ setCreateProduct }) => {
           <img onClick={() => setCreateProduct(false)} src={assets.cross_icon} alt="Close" />
         </div>
         <div className="create-popup-inputs">
+          {/* Input fields */}
           <div>Image</div>
           <input
             type="file"
@@ -127,6 +136,7 @@ const CreateProductPopup = ({ setCreateProduct }) => {
             ))}
           </div>
 
+          {/* Other input fields */}
           <div>Name</div>
           <input
             type="text"
@@ -147,6 +157,7 @@ const CreateProductPopup = ({ setCreateProduct }) => {
           />
           {formErrors.price && <p style={{ color: 'red' }}>{formErrors.price}</p>}
 
+          {/* Additional fields */}
           <div>Description</div>
           <input
             type="text"
@@ -205,7 +216,11 @@ const CreateProductPopup = ({ setCreateProduct }) => {
             onChange={(e) => setDiscount(e.target.value)}
           />
         </div>
-        <button onClick={handleCreate}>Create</button>
+        
+        {/* Display loading indicator when creating product */}
+        <button onClick={handleCreate} disabled={isLoading}>
+          {isLoading ? 'Creating...' : 'Create'}
+        </button>
       </div>
     </div>
   );

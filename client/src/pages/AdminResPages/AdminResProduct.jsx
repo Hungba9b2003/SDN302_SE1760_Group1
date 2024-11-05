@@ -2,32 +2,49 @@ import React, { useState, useEffect } from 'react';
 import '../../module/adminRes.css';
 import '../../module/ManageProducts.css';
 import '../../module/CreateProductPopup.css';
-import '../../module/UpdateProductPopup.css';
 import UpdateProductPopup from './UpdateProductPopup';
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from 'axios';
 import ConfirmDialog from './ConfirmDialog';
 import AdminResNavbar from './../../components/AdminComponents/AdminResNavbar';
 import AdminResSidebar from './../../components/AdminComponents/AdminResSidebar';
 
 const AdminResProduct = ({ setCreateProduct }) => {
+  const navigate = useNavigate();
   const [dishes, setDishes] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' });
   const [updateProduct, setUpdateProduct] = useState(null);
   const [deleteDishId, setDeleteDishId] = useState(null);
   const [deleteDishName, setDeleteDishName] = useState('');
-
+  
   useEffect(() => {
     const fetchDishes = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please log in to access this page.");
+        navigate("/");
+        return;
+      }
+  
       try {
-        const response = await axios.get('http://localhost:5000/manage/dish');
+        const response = await axios.get('http://localhost:5000/manage/dish/restaurant', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         setDishes(response.data);
       } catch (error) {
-        console.error('Error fetching dishes:', error);
+        if (error.response && error.response.status === 401) {
+          // Token expired or unauthorized
+          alert("Your session has expired. Please log in again.");
+          localStorage.removeItem("token"); // Xóa token
+          navigate("/"); // Chuyển hướng về trang chính
+        } else {
+          console.error('Error fetching dishes:', error);
+        }
       }
     };
     fetchDishes();
-  }, []);
+  }, [navigate]);
 
   const handleDeleteClick = (id, name) => {
     setDeleteDishId(id);
@@ -36,17 +53,26 @@ const AdminResProduct = ({ setCreateProduct }) => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/manage/dish/${deleteDishId}`);
-      setDishes((prevDishes) => prevDishes.filter((dish) => dish._id !== deleteDishId));
-      alert('Dish deleted successfully');
+        const token = localStorage.getItem("token");
+        await axios.delete(`http://localhost:5000/manage/dish/${deleteDishId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        setDishes((prevDishes) => prevDishes.filter((dish) => dish._id !== deleteDishId));
+        alert('Dish deleted successfully');
     } catch (error) {
-      console.error('Error deleting dish:', error);
+        console.error('Error deleting dish:', error);
+        if (error.response && error.response.status === 401) {
+            alert("Your session has expired. Please log in again.");
+            localStorage.removeItem("token");
+            navigate("/");
+        }
     } finally {
-      setDeleteDishId(null);
-      setDeleteDishName('');
+        setDeleteDishId(null);
+        setDeleteDishName('');
     }
-  };
-
+};
   const cancelDelete = () => {
     setDeleteDishId(null);
     setDeleteDishName('');
@@ -69,7 +95,6 @@ const AdminResProduct = ({ setCreateProduct }) => {
   };
 
   const handleSearchChange = (e) => setSearchTerm(e.target.value);
-
   const handleSortChange = (e) => {
     const [key, direction] = e.target.value.split('-');
     setSortConfig({ key, direction });
@@ -116,10 +141,7 @@ const AdminResProduct = ({ setCreateProduct }) => {
                 <div className="card" key={dish._id}>
                   <div className="card-image">
                     {dish.image && dish.image.length > 0 ? (
-                      <img
-                        src={dish.image[0].imagineUrl} // Sử dụng trực tiếp URL từ Cloudinary
-                        alt={dish.name}
-                      />
+                      <img src={dish.image[0]} alt={dish.name} />
                     ) : (
                       <span>No Image</span>
                     )}

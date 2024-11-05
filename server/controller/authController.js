@@ -92,7 +92,7 @@ exports.login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { email: account.email, password: account.password, role: account.role },
+      { email: account.email, password: account.password, role: account.role, restaurantId: account.id },
       process.env.JWT_SECRET,
       { expiresIn: "20m" }
     );
@@ -306,6 +306,7 @@ exports.register = async (req, res) => {
   if (role === "Customer") {
     const email = req.body.email.toLowerCase();
     const { password, name, phone, otp } = req.body;
+
     try {
       const errors = [];
       if (email == null || password == null || name == null || phone == null) {
@@ -362,7 +363,7 @@ exports.register = async (req, res) => {
             message: "OTP is incorrect !",
           });
         }
-      } else {
+      } else{
         errors.push({
           code: "IOtp",
           message: "Please enter -Get OTP-",

@@ -19,12 +19,10 @@ const DishSchema = new mongoose.Schema(
       ref: "category",
       required: true,
     },
-    image: [
-      {
-        imagineUrl: { type: String, required: true },
-        imagineName: { type: String, required: true },
-      }
-    ],
+    image: [{
+      type: String,
+      required: true,
+    }],
     discount: {
       type: Number,
     },

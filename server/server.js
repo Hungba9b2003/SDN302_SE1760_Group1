@@ -19,8 +19,8 @@ app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// connectDB();
-connectDB1();
+connectDB();
+// connectDB1();
 
 app.post("/api/decode-token", (req, res) => {
   const { token } = req.body;

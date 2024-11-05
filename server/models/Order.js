@@ -64,7 +64,7 @@ const OrderSchema = new mongoose.Schema({
       min: 0.01,
     },
   },
-  collection: "orders",
+  collection: "Order",
   strict: false, // Cho phép thêm các trường không định nghĩa
 });
 
