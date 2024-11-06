@@ -6,6 +6,7 @@ const cors = require("cors");
 const connectDB = require("./config/database");
 const connectDB1 = require("./config/mydatabase");
 const authRoutes = require("./routes/authRouter");
+const adminRouter = require("./routes/adminRouter");
 const app = express();
 const morgan = require("morgan");
 app.use(morgan("dev"));
@@ -15,8 +16,8 @@ const Account = require("./models/Account");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
-// connectDB();
-connectDB1();
+connectDB();
+// connectDB1();
 app.use(
   session({
     secret: "your_secret_key", // Thay thế bằng khóa bí mật của bạn
@@ -38,6 +39,8 @@ app.use(
 // setInterval(clearExpiredTokens, 10000);
 
 app.use("/api/auth", authRoutes);
+app.use("/admin", adminRouter);
+
 
 const dotenv = require("dotenv");
 dotenv.config();

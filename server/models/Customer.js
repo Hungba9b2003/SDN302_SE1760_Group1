@@ -21,10 +21,12 @@ const CustomerSchema = new mongoose.Schema(
         message: "Phone number is not valid",
       },
     },
-    address: {
-      type: String,
-      required: true,
-    },
+    address: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     avatar: {
       type: String,
     },

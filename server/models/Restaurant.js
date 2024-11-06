@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const RestaurantSchema = new mongoose.Schema(
   {
-    restName: {
+    resName: {
       type: String,
       required: true,
     },
@@ -10,9 +10,11 @@ const RestaurantSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    restImage: {
-      type: String,
-    },
+    restImage: [
+      {
+        type: String,
+      },
+    ],
     status: {
       type: String,
       enum: ["enable", "disable"],
@@ -22,12 +24,12 @@ const RestaurantSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    approvealDate: {
+    approvalDate: {
       type: Date,
-      default: false,
+      default: Date.now,
     },
-    menu: String,
-    revenueReport: String,
+    menu: [],
+    revenueReport: [],
     createdAt: {
       type: Date,
       default: Date.now,
