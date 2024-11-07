@@ -1,10 +1,10 @@
-const Order = require("../models/AdminModels/Order.modal");
-const Report = require("../models/AdminModels/Report.modal");
-const Customer = require("../models/AdminModels/Customer.modal");
+const Order = require("../models/Order");
+const Report = require("../models/Report");
+const Customer = require("../models/Customer");
 const Account = require("../models/Account");
 const Restaurant = require("../models/Restaurant");
 const Dish = require("../models/Dish");
-const Review = require("../models/AdminModels/Review.modal");
+const Review = require("../models/Review");
 const mongoose = require("mongoose");
 //DASHBOARD
 const getOrder = async (req, res, next) => {

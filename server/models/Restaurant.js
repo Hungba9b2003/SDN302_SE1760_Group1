@@ -19,8 +19,8 @@ const RestaurantSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["Active", "InActive"],
-      default: "Active",
+      enum: ["enable", "disable"],
+      default: "enable",
     },
     approved: {
       type: Boolean,

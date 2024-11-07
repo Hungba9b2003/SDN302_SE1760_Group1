@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose");
 
 const DishSchema = new mongoose.Schema(
@@ -21,39 +20,36 @@ const DishSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    image: [{
-      type: String,
-      required: true,
-    }],
+    image: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     discount: {
       type: Number,
 
-    
-    categories: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      required: true,
-    },
-    reviews: [
-      {
+      categories: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Review",
+        ref: "Category",
+        required: true,
       },
-    ],
-    promotion: {
-      type: String,
+      reviews: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Review",
+        },
+      ],
+      promotion: {
+        type: String,
+      },
     },
-
   },
   {
     collection: "Dish", // Tên collection trong MongoDB
     timestamps: true, // Thêm trường createdAt và updatedAt tự động
   }
 );
-
-
-
-    
 
 const Dish = mongoose.model("Dish", DishSchema);
 module.exports = Dish;

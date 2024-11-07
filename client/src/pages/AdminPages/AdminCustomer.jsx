@@ -16,7 +16,7 @@ const CustomerManagement = () => {
     account: {
       email: "",
       password: "",
-      role: "customer",
+      role: "Customer",
     },
   });
 

@@ -13,7 +13,6 @@ import Register from "./pages/Authentication/Register";
 import Detail from "./pages/Detail/Detail";
 import Checkout from "./pages/Checkout/Checkout";
 
-
 import CreateProductPopup from "./pages/AdminResPages/CreateProductPopup";
 import UpdateProductPopup from "./pages/AdminResPages/UpdateProductPopup";
 import AdminResDashboard from "./components/AdminComponents/AdminResDashboard";
@@ -37,7 +36,6 @@ import AdminFeedback from "./pages/AdminPages/AdminFeedback";
 import AdminRestaurant from "./pages/AdminPages/AdminRestaurant";
 import AdminOrder from "./pages/AdminPages/AdminOrder";
 import AdminLayout from "./components/AdminComponents/AdminLayout";
-
 
 const App = () => {
   const location = useLocation();
@@ -70,23 +68,23 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/authentication/login" element={<Login />} />
             <Route path="/authentication/register" element={<Register />} />
-            <Route path="/authentication/forgetPassword"
+            <Route
+              path="/authentication/forgetPassword"
               element={<ForgetPassword />}
             />
             <Route path="/cart" element={<Cart />} />
             <Route path="/order" element={<PlaceOrder />} />
             <Route path="/myorder" element={<MyOrders />} />
-            <Route path="/dashboard" element={<Dashboard />} />
 
-             <Route path="/admin" element={<AdminLayout />}>
-                            <Route index element={<AdminDashboard />} />
-                            <Route path="account" element={<AdminAccount />} />
-                            <Route path="customer" element={<AdminCustomer />} />
-                            <Route path="restaurant" element={<AdminRestaurant />} />
-                            <Route path="order" element={<AdminOrder />} />
-                            <Route path="report" element={<AdminReport />} />
-                            <Route path="feedback" element={<AdminFeedback />} />
-                          </Route>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="account" element={<AdminAccount />} />
+              <Route path="customer" element={<AdminCustomer />} />
+              <Route path="restaurant" element={<AdminRestaurant />} />
+              <Route path="order" element={<AdminOrder />} />
+              <Route path="report" element={<AdminReport />} />
+              <Route path="feedback" element={<AdminFeedback />} />
+            </Route>
 
             <Route path="/detail/:food_id" element={<Detail />} />
             <Route path="/order-history" element={<OrderHistory />} />
@@ -132,7 +130,6 @@ const App = () => {
             />
           </Routes>
         </StoreContextProvider>
-
       </div>
       {!hideFooter && <Footer />}
     </>
