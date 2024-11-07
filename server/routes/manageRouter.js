@@ -22,11 +22,13 @@ const {
   getDishes,
   getDishById,
   updateDish,
-  deleteDish,
   getCategory,
   newCategory,
   updateCategory,
   deleteCategory,
+  getDishesByRestaurantId,
+  updateRestaurantMenu,
+  deleteDish
 } = require("../controller/dishController");
 
 
@@ -41,7 +43,8 @@ router.post(
   ],
   createDish
 );
-
+router.patch('/update-restaurant-menu', updateRestaurantMenu);
+router.get("/dish/restaurant", getDishesByRestaurantId);
 router.get("/dish", getDishes);
 router.get("/category", getCategory);
 router.get("/dish/:id", getDishById);
@@ -53,9 +56,7 @@ router.put(
   ],
   updateDish
 );
-
-router.delete("/dish/:id", deleteDish);
-
+router.delete('/dish/:id', deleteDish);
 router.post(
   "/category",
   upload.single('menu_image'), // Upload một file menu_image cho Category

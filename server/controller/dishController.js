@@ -1,68 +1,134 @@
 const Dish = require('../models/Dish');
+const jwt = require("jsonwebtoken");
 const Category = require('../models/Category'); // Import model Category
 const cloudinary = require('../controller/cloudinary');
 const path = require('path');
 const fs = require('fs');
-
+const mongoose = require('mongoose');
+const Restaurant = require('../models/Restaurant');
 // Tạo mới một món ăn
 async function createDish(req, res, next) {
     try {
-        const { name, price, description, discount, categories } = req.body;
-
-        if (!categories) {
-            return res.status(400).json({ message: "Category is required" });
+      const { name, price, description, discount, categories } = req.body;
+  
+      if (!categories) {
+        return res.status(400).json({ message: "Category is required" });
+      }
+  
+      // Verify the token and get the restaurant ID
+      const token = req.headers.authorization.split(" ")[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const restaurantId = decoded.restaurantId;
+  
+      // Find or create the category
+      let categoryId;
+      const category = await Category.findOne({ name: categories });
+      if (category) {
+        categoryId = category._id;
+      } else {
+        const newCategory = await Category.create({ name: categories });
+        categoryId = newCategory._id;
+      }
+  
+      // Handle image upload to Cloudinary (if any)
+      let imageUrls = [];
+      if (req.files && req.files.length > 0) {
+        for (const file of req.files) {
+          const result = await cloudinary.uploader.upload(file.path);
+          imageUrls.push(result.secure_url);
         }
-
-        // Kiểm tra hoặc tạo mới Category
-        let categoryId;
-        const category = await Category.findOne({ name: categories });
-        if (category) {
-            categoryId = category._id;
-        } else {
-            const newCategory = await Category.create({ name: categories, menu_image: '' });
-            categoryId = newCategory._id;
-        }
-
-        // Xử lý upload ảnh lên Cloudinary (nếu có)
-        let imageUrls = [];
-        if (req.files && req.files.length > 0) {
-            for (const file of req.files) {
-                const result = await cloudinary.uploader.upload(file.path);
-                imageUrls.push({
-                    imagineUrl: result.secure_url, // Lấy URL từ Cloudinary
-                    imagineName: file.originalname,
-                });
-            }
-        }
-
-        // Tạo Dish mới với thông tin đã nhập
-        const newDish = await Dish.create({
-            name,
-            price,
-            description,
-            discount,
-            categories: categoryId, // Lưu ID của Category
-            image: imageUrls,
-        });
-
-        res.status(201).json({
-            message: "Dish created successfully",
-            dish: newDish,
-        });
+      }
+  
+      // Create the new Dish
+      const newDish = await Dish.create({
+        name,
+        price,
+        description,
+        discount,
+        categories: categoryId,
+        image: imageUrls,
+      });
+  
+      // Update the Restaurant's menu to include the new dishId
+      await Restaurant.findByIdAndUpdate(
+        restaurantId,
+        { $push: { menu: { dishId: new mongoose.Types.ObjectId(newDish._id), status: "available" } } },
+        { new: true }
+      );
+  
+      res.status(201).json({
+        message: "Dish created successfully and added to restaurant's menu",
+        dish: newDish,
+      });
     } catch (error) {
-        next(error);
+      next(error);
     }
-}
+  }
+
+async function updateRestaurantMenu(req, res, next) {
+    try {
+      const { dishId } = req.body;
+      const token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const restaurantId = decoded.restaurantId;
+  
+      const restaurant = await Restaurant.findById(restaurantId);
+      if (!restaurant) {
+        return res.status(404).json({ message: 'Restaurant not found' });
+      }
+  
+      // Add the dish to the menu
+      restaurant.menu.push({ dishId, status: 'available' });
+      await restaurant.save();
+  
+      res.status(200).json({ message: 'Dish added to the menu' });
+    } catch (error) {
+      next(error);
+    }
+  }
+  
 
 // Lấy danh sách món ăn
 async function getDishes(req, res, next) {
     try {
-        const dishes = await Dish.find().populate('categories', 'name menu_image') //.populate('reviews');
+        const token = req.headers.authorization.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        if (decoded.role !== 'Restaurant') {
+            return res.status(403).json({ message: "Access denied" });
+        }
+
+        const dishes = await Dish.find({ restaurant: decoded.id }).populate('categories', 'name menu_image');
         res.status(200).json(dishes);
     } catch (error) {
         next(error);
     }
 }
+
+async function getDishesByRestaurantId(req, res, next) {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        if (!token) return res.status(401).json({ message: "Unauthorized" });
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const restaurantId = decoded.restaurantId;
+
+        const restaurant = await Restaurant.findById(restaurantId).populate({
+            path: 'menu.dishId', // Đảm bảo rằng đây là đúng tên trường trong model
+            model: 'dish' // Tên model của món ăn
+        });
+        if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
+
+        const availableDishes = restaurant.menu
+            .filter(dish => dish.status === "available")
+            .map(dish => dish.dishId); // Trả về chi tiết món ăn
+
+        res.status(200).json(availableDishes);
+    } catch (error) {
+        next(error);
+    }
+}
+
 async function getCategory(req, res, next) {
     try {
         const categories = await Category.find();
@@ -175,9 +241,9 @@ async function getDishById(req, res, next) {
 async function updateDish(req, res, next) {
     try {
         const { name, price, description, discount, categories } = req.body;
-        const existingImages = req.body.existingImages || []; // Ảnh cũ từ client
+        const existingImages = req.body.existingImages || []; // Lưu lại ảnh cũ từ client
 
-        // Lấy đối tượng dish hiện tại
+        // Lấy dish hiện tại
         const dish = await Dish.findById(req.params.id);
         if (!dish) {
             return res.status(404).json({ message: "Dish not found" });
@@ -202,16 +268,14 @@ async function updateDish(req, res, next) {
             dish.categories = categoryId;
         }
 
-        // Danh sách các URL ảnh giữ lại và upload ảnh mới lên Cloudinary
-        let updatedImages = dish.image.filter(img => existingImages.includes(img.imagineName));
+        // Danh sách URL ảnh giữ lại và upload ảnh mới lên Cloudinary
+        let updatedImages = dish.image.filter(img => existingImages.includes(img));
+
         if (req.files && req.files.length > 0) {
             for (const file of req.files) {
                 const result = await cloudinary.uploader.upload(file.path);
-                updatedImages.push({
-                    imagineUrl: result.secure_url,
-                    imagineName: file.originalname
-                });
-
+                updatedImages.push(result.secure_url);
+                
                 // Xóa file tạm sau khi upload xong
                 fs.unlink(file.path, (err) => {
                     if (err) console.error(`Error deleting temporary file ${file.path}:`, err);
@@ -219,7 +283,7 @@ async function updateDish(req, res, next) {
             }
         }
 
-        // Cập nhật trường ảnh trong document dish
+        // Cập nhật trường ảnh của dish
         dish.image = updatedImages;
 
         // Lưu cập nhật vào database
@@ -232,17 +296,31 @@ async function updateDish(req, res, next) {
 }
 
 // Xóa một món ăn
+
 async function deleteDish(req, res, next) {
     try {
         const { id } = req.params;
-        const dish = await Dish.findByIdAndDelete(id);
 
+        console.log(`Request to delete dish with ID: ${id}`); // Log ID món ăn
+
+        // Tìm món ăn theo ID và xóa
+        const dish = await Dish.findByIdAndDelete(id);
         if (!dish) {
+            console.error(`Dish not found with ID: ${id}`); // Log lỗi nếu không tìm thấy món ăn
             return res.status(404).json({ message: "Dish not found" });
         }
 
+        // Xóa ID món ăn khỏi menu của nhà hàng
+        const updateResult = await Restaurant.updateMany(
+            { 'menu.dishId': id }, // Tìm các nhà hàng có món ăn trong menu
+            { $pull: { menu: { dishId: id } } } // Xóa món ăn khỏi menu
+        );
+
+        console.log(`Updated restaurant menu for dish ID: ${id}, result: ${updateResult}`); // Log kết quả cập nhật
+
         res.status(200).json({ message: "Dish deleted successfully" });
     } catch (error) {
+        console.error('Error while deleting dish:', error); // Log lỗi nếu có
         next(error);
     }
 }
@@ -252,9 +330,11 @@ module.exports = {
     getDishes,
     getDishById,
     updateDish,
-    deleteDish,
     getCategory,
     newCategory,
     updateCategory,
-    deleteCategory
+    deleteCategory,
+    getDishesByRestaurantId,
+    updateRestaurantMenu,
+    deleteDish
 };

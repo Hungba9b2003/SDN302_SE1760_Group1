@@ -8,14 +8,15 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState(''); 
+  const [category, setCategory] = useState('');
   const [discount, setDiscount] = useState('');
-  const [image, setImage] = useState([]); // State để lưu cả ảnh cũ và ảnh mới
+  const [image, setImage] = useState([]);
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState('');
   const [useNewCategory, setUseNewCategory] = useState(false);
   const [error, setError] = useState('');
   const [formErrors, setFormErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -34,30 +35,27 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
       setName(dish.name);
       setPrice(dish.price);
       setDescription(dish.description);
-      setCategory(dish.categories);
+      setCategory(dish.category); // Use `dish.category` if it's a single category
       setDiscount(dish.discount || '');
-
-      // Lưu trữ các ảnh cũ vào state image
       if (dish.image && dish.image.length > 0) {
-        setImage(dish.image.map(img => ({
-          url: img.imagineUrl, // URL từ Cloudinary trực tiếp
-          name: img.imagineName,
-          isNew: false
+        setImage(dish.image.map(imgUrl => ({
+          url: imgUrl,
+          isNew: false,
         })));
       }
     }
   }, [dish]);
 
-  const handleDeleteImage = (imgName) => {
-    setImage((prevImages) => prevImages.filter((img) => img.name !== imgName));
-  };
+  const handleDeleteImage = (imgUrl) => {
+    setImage((prevImages) => prevImages.filter((img) => img.url !== imgUrl));
+};
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     const newImages = files.map(file => ({
       url: URL.createObjectURL(file),
       file,
-      isNew: true
+      isNew: true,
     }));
     setImage(prevImages => [...prevImages, ...newImages]);
   };
@@ -77,20 +75,21 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
 
     if (Object.keys(errors).length > 0 || error) return;
 
+    setIsLoading(true);
+
     const formData = new FormData();
     formData.append('name', name);
     formData.append('price', price);
     formData.append('description', description);
     formData.append('discount', discount);
     const selectedCategory = useNewCategory ? newCategory : category;
-    formData.append('categories', selectedCategory);
+    formData.append('category', selectedCategory);
 
-    // Gửi danh sách ảnh, chỉ thêm ảnh mới (isNew: true)
     image.forEach((img) => {
       if (img.isNew) {
         formData.append('image', img.file);
       } else {
-        formData.append('existingImages[]', img.name);
+        formData.append('existingImages[]', img.url);
       }
     });
 
@@ -104,6 +103,8 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
     } catch (error) {
       console.error("Error updating dish:", error);
       alert('Failed to update product');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -120,7 +121,7 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
             {image.map((img, index) => (
               <div key={index} className="image-wrapper">
                 <img src={img.url} alt={`Dish image ${index + 1}`} className="preview-image" />
-                <button className="delete-button" onClick={() => handleDeleteImage(img.name)}>
+                <button className="delete-button" onClick={() => handleDeleteImage(img.url)}>
                   &times;
                 </button>
               </div>
@@ -166,7 +167,9 @@ const UpdateProductPopup = ({ setUpdateProduct, dish }) => {
           <div>Discount</div>
           <input type="number" placeholder="Discount" value={discount} onChange={(e) => setDiscount(e.target.value)} />
         </div>
-        <button onClick={handleUpdate}>Update</button>
+        <button onClick={handleUpdate} disabled={isLoading}>
+          {isLoading ? "Updating..." : "Update"}
+        </button>
       </div>
     </div>
   );

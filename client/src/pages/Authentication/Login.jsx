@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./Authentication.css";
-// import "./RegisterPopup.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import { assets } from "../../assets/assets";
 import axios from "axios";
 import OtpInput from "react-otp-input";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -15,54 +15,66 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  // const [Form, setForm] = useState({""});
   const token = localStorage.getItem("token");
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
   useEffect(() => {
     const checkToken = async () => {
       const currentToken = localStorage.getItem("token");
-      console.log(currentToken);
       if (currentToken) {
         try {
-          await axios.post("http://localhost:5000/api/auth/check-token", {
+          const response = await axios.post("http://localhost:5000/api/auth/check-token", {
             token: currentToken,
           });
-          alert("You have not logged in to your account!");
-          navigate("/");
+
+          // Redirect based on role if token is valid
+          if (role === "Restaurant") {
+            navigate("/adminres/manage");
+          } else {
+            navigate("/");
+          }
         } catch (error) {
           localStorage.removeItem("token");
         }
       }
     };
 
-    // Chỉ chạy checkToken nếu đường dẫn là "/"
+    // Only run checkToken if the path is "/authentication/login"
     if (location.pathname === "/authentication/login") {
       checkToken();
     }
-  }, [location.pathname, navigate]);
+  }, [location.pathname, navigate, role]);
+
   const handleLogin = async () => {
-    // if (role === "") {
-    //   document.getElementById("message").textContent =
-    //     "Please choose role before login";
-    //   document.getElementById("message").style.display = "block";
-    //   return;
-    // }
+    if (!role) {
+      document.getElementById("message").textContent = "Please choose a role before logging in";
+      document.getElementById("message").style.display = "block";
+      return;
+    }
+
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        { token, role, email, password }
-      );
+      const response = await axios.post("http://localhost:5000/api/auth/login", {
+        token,
+        role,
+        email,
+        password,
+      });
       if (response.data.token) {
-        localStorage.setItem("token", response.data.token); // Lưu token vào localStorage
+        localStorage.setItem("token", response.data.token); // Save token to localStorage
+        // Redirect based on selected role
+        if (role === "Restaurant") {
+          alert("Login successful");
+          navigate("/adminres/manage");
+        } else {
+          alert("Login successful");
+          navigate("/");
+        }
       }
-      alert("Login successful");
-      navigate("/");
     } catch (error) {
-      console.log(error.response.data.message);
-      document.getElementById("message").textContent =
-        error.response.data.message;
+      document.getElementById("message").textContent = error.response?.data?.message || "Login failed";
     }
   };
 
@@ -116,7 +128,7 @@ const Login = () => {
                 <input
                   style={{ width: "100%" }}
                   type={showPassword ? "text" : "password"}
-                  placeholder="Return Password"
+                  placeholder="Your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -130,16 +142,11 @@ const Login = () => {
                     zIndex: 1,
                   }}
                 >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}{" "}
-                  {/* Icon con mắt */}
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
               </div>
             </div>
-            <div
-              className="message"
-              id="message"
-              style={{ color: "red" }}
-            ></div>
+            <div className="message" id="message" style={{ color: "red" }}></div>
             <p style={{ textAlign: "right" }}>
               <span
                 onClick={() => {
@@ -147,11 +154,10 @@ const Login = () => {
                   document.getElementById("message").style.display = "none";
                 }}
               >
-                Forget password?
+                Forgot password?
               </span>
             </p>
             <button onClick={handleLogin}>Login</button>
-
             <p>
               Create a new account?{" "}
               <span

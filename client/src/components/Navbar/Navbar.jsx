@@ -79,12 +79,6 @@ const Navbar = () => {
               menu
             </a>
 
-            <Link
-              to="/adminres/dashboard"
-              className={`${menu === "manage" ? "active" : ""}`}
-            >
-              restaurant
-            </Link>
           </ul>
           {isLoggedIn ? (
             <>

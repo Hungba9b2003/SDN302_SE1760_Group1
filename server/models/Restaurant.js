@@ -28,7 +28,12 @@ const RestaurantSchema = new mongoose.Schema(
     approvealDate: {
       type: Date,
     },
-    menu: [],
+    menu: [
+      {
+        dishId: { type: mongoose.Schema.Types.ObjectId, ref: 'Dish' }, // Đảm bảo ref đến model Dish
+        status: String
+      }
+    ],
     revenueReport: [],
     createdAt: {
       type: Date,

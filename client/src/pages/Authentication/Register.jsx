@@ -173,6 +173,7 @@ const Register = () => {
         cardId,
         cardIdPhoto,
         address,
+        otp
       });
       const formData2 = new FormData();
       formData2.append("cardIdPhoto", cardIdPhoto);
