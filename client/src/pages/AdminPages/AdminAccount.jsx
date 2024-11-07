@@ -113,71 +113,26 @@ const RestaurantDetails = ({ restaurant }) => (
   </div>
 );
 
-const AdminDashboard = () => {
+const AdminAccount = () => {
   const [accounts, setAccounts] = useState([]);
-  const [view, setView] = useState("All");
-  const [selectedAccount, setSelectedAccount] = useState(null);
   const [filteredAccounts, setFilteredAccounts] = useState([]);
-  const [statistics, setStatistics] = useState({
-    totalCustomers: 0,
-    totalRestaurants: 0,
-    pendingRestaurants: 0,
-    totalOrders: 0,
-  });
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [filter, setFilter] = useState("All");
 
-  // Fetch all accounts and statistics on component mount
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:6969/admin/list-account"
-        );
+        const response = await fetch("http://localhost:6969/admin/list-account");
         const data = await response.json();
-        console.log(data);
         setAccounts(data);
-        setFilteredAccounts(data); // Initial state shows all accounts
-
-        const customerCount = Array.isArray(data)
-          ? data.filter((acc) => acc.role?.toLowerCase() === "customer").length
-          : 0;
-
-        const restaurantCount = Array.isArray(data)
-          ? data.filter((acc) => acc.role?.toLowerCase() === "restaurant")
-              .length
-          : 0;
-
-        const pendingRestaurants = Array.isArray(data)
-          ? data.filter(
-              (acc) =>
-                // acc.role?.toLowerCase() === "restaurant" &&
-                acc.status?.toLowerCase() === "disable"
-            ).length
-          : 0;
-
-        setStatistics({
-          totalCustomers: customerCount,
-          totalRestaurants: restaurantCount,
-          pendingRestaurants: pendingRestaurants,
-          // totalOrders: totalOrders,
-        });
+        setFilteredAccounts(data);  // Initially show all accounts
       } catch (error) {
         console.error("Error fetching accounts:", error);
       }
     };
-
     fetchAccounts();
   }, []);
 
-  // Filter accounts based on selected view
-  useEffect(() => {
-    if (view === "All") {
-      setFilteredAccounts(accounts);
-    } else {
-      setFilteredAccounts(accounts.filter((account) => account.role === view));
-    }
-  }, [view, accounts]);
-
-  // Fetch individual account details by ID
   const fetchAccountById = async (id) => {
     try {
       const response = await fetch(`http://localhost:6969/admin/account/${id}`);
@@ -188,41 +143,39 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleFilterChange = (event) => {
+    const selectedFilter = event.target.value;
+    setFilter(selectedFilter);
+
+    if (selectedFilter === "All") {
+      setFilteredAccounts(accounts);
+    } else {
+      const filtered = accounts.filter(
+        (account) => account.role.toLowerCase() === selectedFilter.toLowerCase()
+      );
+      setFilteredAccounts(filtered);
+    }
+  };
+
   return (
     <div>
-      {/* Statistics Section */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "20px",
-        }}
+      <h1>Admin Accounts</h1>
+
+      {/* Filter Dropdown */}
+      <label htmlFor="filter">Filter by Role: </label>
+      <select
+        id="filter"
+        value={filter}
+        onChange={handleFilterChange}
+        style={{ marginBottom: "20px" }}
       >
-        <div>
-          <h3>Total Customers: {statistics.totalCustomers}</h3>
-        </div>
-        <div>
-          <h3>Total Restaurants: {statistics.totalRestaurants}</h3>
-        </div>
-        <div>
-          <h3>InActive Restaurants: {statistics.pendingRestaurants}</h3>
-        </div>
-        <div>
-          <h3>Total Orders: {statistics.totalOrders}</h3>
-        </div>
-      </div>
+        <option value="All">All</option>
+        <option value="Customer">Customer</option>
+        <option value="Restaurant">Restaurant</option>
+      </select>
 
-      {/* Navigation Tabs for Filtering */}
-      <div>
-        <button onClick={() => setView("All")}>All</button>
-        <button onClick={() => setView("Customer")}>Customers</button>
-        <button onClick={() => setView("Restaurant")}>Restaurants</button>
-      </div>
-
-      {/* Account Table */}
       {!selectedAccount ? (
-        <div>
-          <h2>Accounts List</h2>
+        <>
           <table>
             <thead>
               <tr>
@@ -243,22 +196,19 @@ const AdminDashboard = () => {
               ))}
             </tbody>
           </table>
-        </div>
+        </>
       ) : (
-        // Display Account Details based on Role
-        <div>
-          <button onClick={() => setSelectedAccount(null)}>
-            Back to Accounts
-          </button>
+        <>
+          <h1>Account Details</h1>
           {selectedAccount.accounts.role.toUpperCase() === "CUSTOMER" ? (
             <CustomerDetails customer={selectedAccount.customer} />
           ) : (
             <RestaurantDetails restaurant={selectedAccount.restaurant} />
           )}
-        </div>
+        </>
       )}
     </div>
   );
 };
 
-export default AdminDashboard;
+export default AdminAccount;

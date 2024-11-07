@@ -10,9 +10,13 @@ const RestaurantSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    restImage: {
-      type: [],
-    },
+
+    restImage: [
+      {
+        type: String,
+      },
+    ],
+
     status: {
       type: String,
       enum: ["Active", "InActive"],
@@ -22,6 +26,7 @@ const RestaurantSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+
     cartId: {
       type: String,
     },
@@ -34,6 +39,13 @@ const RestaurantSchema = new mongoose.Schema(
         status: String
       }
     ],
+
+    approvalDate: {
+      type: Date,
+      default: Date.now,
+    },
+    menu: [],
+
     revenueReport: [],
     createdAt: {
       type: Date,

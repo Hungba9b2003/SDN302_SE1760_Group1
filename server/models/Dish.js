@@ -1,4 +1,4 @@
-// models/Dish.js
+
 const mongoose = require("mongoose");
 
 const DishSchema = new mongoose.Schema(
@@ -27,16 +27,23 @@ const DishSchema = new mongoose.Schema(
     }],
     discount: {
       type: Number,
+
+    
+    categories: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
     },
     reviews: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Review", //Giả sử có một collection Review để tham chiếu
+        ref: "Review",
       },
     ],
     promotion: {
       type: String,
     },
+
   },
   {
     collection: "Dish", // Tên collection trong MongoDB
@@ -44,6 +51,9 @@ const DishSchema = new mongoose.Schema(
   }
 );
 
+
+
+    
 
 const Dish = mongoose.model("Dish", DishSchema);
 module.exports = Dish;

@@ -3,6 +3,9 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const connectDB = require("./config/database");
 const connectDB1 = require("./config/mydatabase");
+
+const authRoutes = require("./routes/authRouter");
+const adminRouter = require("./routes/adminRouter");
 const app = express();
 const multer = require("multer");
 const morgan = require("morgan");
@@ -54,6 +57,12 @@ app.use("/api/dish", DishRouter);
 app.use("/check-token", checkToken);
 
 // Cấu hình session
+const Account = require("./models/Account");
+const session = require("express-session");
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
+connectDB();
+// connectDB1();
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "your_secret_key",
@@ -85,6 +94,8 @@ app.use("/api/details", detailRouter);
 app.use((req, res, next) => {
   res.status(404).json({ message: "Route not found" });
 });
+app.use("/admin", adminRouter);
+
 
 // Khởi động server
 const PORT = process.env.PORT || 6969;
