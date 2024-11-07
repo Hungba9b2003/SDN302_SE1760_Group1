@@ -14,8 +14,8 @@ const ReportSchema = new mongoose.Schema(
     },
     reason: {
       type: String,
-      required: true,
-      enum: ["option1", "option2", "option3"], // Giả sử bạn có nhiều tùy chọn cho lý do
+      required: true, // The reason for the report (e.g., issue, complaint, etc.)
+      maxlength: 500,
     },
     details: {
       type: String,
@@ -23,7 +23,7 @@ const ReportSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "resolved", "closed"], // Các trạng thái của báo cáo
+      enum: ["pending", "in-progress", "resolved", "rejected"], // The status of the report
       default: "pending",
     },
     createdDate: {

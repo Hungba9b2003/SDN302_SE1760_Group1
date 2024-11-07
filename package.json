@@ -11,6 +11,7 @@
     "braces": "^3.0.3",
     "chalk": "^4.1.2",
     "cliui": "^8.0.1",
+    "cloudinary": "^2.5.1",
     "color-convert": "^2.0.1",
     "color-name": "^1.1.4",
     "combined-stream": "^1.0.8",

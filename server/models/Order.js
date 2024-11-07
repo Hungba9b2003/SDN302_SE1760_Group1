@@ -37,8 +37,8 @@ const OrderSchema = new mongoose.Schema(
       {
         dishId: {
           type: mongoose.Schema.Types.ObjectId,
+          ref: "Dish",
           required: true,
-          ref: "Dish", // Tham chiếu đến collection Dish (giả sử có collection món ăn)
         },
         quantity: {
           type: Number,
@@ -56,6 +56,7 @@ const OrderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
+
       enum: ["pending", "confirmed", "failed", "completed"],
       default: "pending",
     },

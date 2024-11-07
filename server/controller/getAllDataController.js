@@ -5,7 +5,7 @@ const Restaurant = require("../models/Restaurant");
 const getAllData = async () => {
   const [categories, dishs, restaurants] = await Promise.all([
     Category.find(),
-    Dish.find().populate("categories reviews"), // Populate các tham chiếu nếu có
+    Dish.find().populate("categories"), // Populate các tham chiếu nếu có
     Restaurant.find(),
   ]);
 

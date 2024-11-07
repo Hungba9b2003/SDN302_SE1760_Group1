@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 
 const DishSchema = new mongoose.Schema(
   {
-    _id: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-    },
     name: {
       type: String,
       required: true,
@@ -14,6 +10,7 @@ const DishSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+
     categories: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category", //Giả sử có một collection Category để tham chiếu
@@ -25,27 +22,27 @@ const DishSchema = new mongoose.Schema(
     },
     image: [
       {
-        imagineUrl: {
-          type: String,
-          required: true,
-        },
-        imagineName: {
-          type: String,
-          required: true,
-        },
+        type: String,
+        required: true,
       },
     ],
-    reviews: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Review", //Giả sử có một collection Review để tham chiếu
-      },
-    ],
-    promotion: {
-      type: String,
-    },
     discount: {
-      type: String,
+      type: Number,
+
+      categories: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+        required: true,
+      },
+      reviews: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Review",
+        },
+      ],
+      promotion: {
+        type: String,
+      },
     },
   },
   {
@@ -54,6 +51,5 @@ const DishSchema = new mongoose.Schema(
   }
 );
 
-const Dish = mongoose.model("dish", DishSchema);
-
+const Dish = mongoose.model("Dish", DishSchema);
 module.exports = Dish;

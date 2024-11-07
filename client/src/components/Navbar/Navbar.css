@@ -149,3 +149,48 @@
 .search-suggestions .suggestion-item:hover {
   background-color: #f2f2f2; /* Đổi màu khi hover để tạo tương tác */
 }
+
+.search-form {
+  max-width: 600px;
+  margin: 0px auto;
+  padding: 0px;
+  background-color: #fff;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.search-form .search-input {
+  flex: 1;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px 0 0 4px; /* Bo góc chỉ bên trái */
+  height: 40px; /* Đặt chiều cao cố định */
+  box-sizing: border-box;
+}
+
+.search-form .search-button {
+  background-color: #ee4d2d;
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0; /* Bo góc chỉ bên phải */
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 16px; /* Tạo khoảng cách trái phải */
+  height: 40px; /* Chiều cao bằng với input */
+  box-sizing: border-box;
+  width: auto; /* Đặt width tự động để nút không chiếm hết chiều rộng */
+  min-width: 100px; /* Đặt chiều rộng tối thiểu của nút */
+  transition: background-color 0.3s ease;
+}
+
+.search-form .search-button:hover {
+  background-color: #ee4d2d;
+}
