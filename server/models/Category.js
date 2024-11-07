@@ -2,13 +2,11 @@ const mongoose = require("mongoose");
 
 const CategorySchema = new mongoose.Schema(
   {
-    menu_name: {
+    name: {
       type: String,
-      required: true,
     },
     menu_image: {
       type: String,
-      required: true,
     },
   },
   {

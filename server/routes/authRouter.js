@@ -23,13 +23,9 @@ router.post("/verify-otp", verifyOtp);
 router.post("/forget-password", forgetPassword);
 
 const uploadPath =
-<<<<<<< HEAD
-  "E:/Kì 7/SDN302/SDN302_FoodDelivery/client/src/assets/img/idphoto";
-=======
   "C:/Codes/MERN/SDN302_SE1760_Group1/client/src/assets/img/idphoto";
 
 // Kiểm tra và tạo thư mục nếu chưa tồn tại
->>>>>>> 9c51192ad0fe223a8d9ec397e444deae0b7c172a
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
 }

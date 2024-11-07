@@ -115,7 +115,7 @@ async function getDishesByRestaurantId(req, res, next) {
 
         const restaurant = await Restaurant.findById(restaurantId).populate({
             path: 'menu.dishId', // Đảm bảo rằng đây là đúng tên trường trong model
-            model: 'dish' // Tên model của món ăn
+            model: 'Dish' // Tên model của món ăn
         });
         if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
 

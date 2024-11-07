@@ -78,6 +78,14 @@ exports.login = async (req, res) => {
     }
 
     const account = await Account.findOne({ email: email });
+    if (!account) {
+      return res.status(400).json({ message: "Email does not exist!" });
+    }
+    
+    if (!account.email) {
+      console.log("Warning: account found, but email field is null.");
+      return res.status(400).json({ message: "Account email is missing or invalid." });
+    }
     console.log(account.email);
     if (!account || account.status == null) {
       return res.status(400).json({ message: "Email is not exist !" });
