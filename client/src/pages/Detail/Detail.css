@@ -50,6 +50,7 @@
   color: #fffbfb;
   border: 2px solid #ff4c24;
   cursor: pointer;
+  margin-right: 10px;
 }
 
 @media (max-width: 768px) {

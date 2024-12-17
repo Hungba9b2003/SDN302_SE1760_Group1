@@ -4,22 +4,22 @@ const AccountSchema = new mongoose.Schema(
   {
     password: {
       type: String,
-      required: [true, "Password is required"],
-      validate: {
-        validator: (v) =>
-          validator.isStrongPassword(v, {
-            minLength: 8,
-            minLowercase: 1,
-            minUppercase: 1,
-            minNumbers: 1,
-            minSymbols: 1,
-          }),
-        errorInfo: {
-          code: "IPassword",
-          message:
-            "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character",
-        },
-      },
+      // required: [true, "Password is required"],
+      // validate: {
+      //   validator: (v) =>
+      //     validator.isStrongPassword(v, {
+      //       minLength: 8,
+      //       minLowercase: 1,
+      //       minUppercase: 1,
+      //       minNumbers: 1,
+      //       minSymbols: 1,
+      //     }),
+      //   errorInfo: {
+      //     code: "IPassword",
+      //     message:
+      //       "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character",
+      //   },
+      // },
     },
     email: {
       unique: true,
@@ -35,7 +35,7 @@ const AccountSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: {
-        values: ["Active", "Inactive"],
+        values: ["Active", "InActive"],
       },
     },
     role: {

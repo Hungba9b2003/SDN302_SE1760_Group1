@@ -1,0 +1,137 @@
+/* adminrestaurant.css */
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin: 20px 0;
+}
+
+h2 {
+  color: #555;
+  margin: 20px 0 10px;
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  border-collapse: collapse;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+table th, table td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+table th {
+  background-color: #f7f7f7;
+  color: #333;
+  font-weight: bold;
+}
+
+table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tr:hover {
+  background-color: #f1f1f1;
+}
+
+button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 5px;
+  font-size: 14px;
+}
+
+button[type="button"],
+button[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+}
+
+button[type="button"]:hover,
+button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+button[type="button"].delete {
+  background-color: #f44336;
+}
+
+button[type="button"].delete:hover {
+  background-color: #e53935;
+}
+
+form {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+form h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form input[type="password"]:focus,
+form select:focus {
+  border-color: #4CAF50;
+}
+
+form button[type="submit"],
+form button[type="button"] {
+  width: 100%;
+  background-color: #4CAF50;
+  padding: 12px;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+form button[type="button"].cancel {
+  background-color: #f44336;
+}
+
+form button[type="button"].cancel:hover {
+  background-color: #e53935;
+}
+
+form button[type="submit"]:hover {
+  background-color: #45a049;
+}

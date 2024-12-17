@@ -1,17 +1,52 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import "./Navbar.css";
 import { assets } from "../../assets/assets";
 import { Link, useLocation } from "react-router-dom";
 import { StoreContext } from "../../Context/StoreContext";
+import { useNavigate } from "react-router-dom";
 import Dropdown from "react-bootstrap/Dropdown";
 import Image from "react-bootstrap/Image";
-const Navbar = ({ setShowLogin }) => {
+import axios from "axios";
+const Navbar = () => {
   const [menu, setMenu] = useState("home");
   const { getTotalCartAmount } = useContext(StoreContext);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  console.log(isLoggedIn);
+  const navigate = useNavigate();
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    setToken("");
+  };
+
+  useEffect(() => {
+    const checkToken = async () => {
+      const currentToken = localStorage.getItem("token");
+      setToken(currentToken);
+      if (currentToken) {
+        try {
+          await axios.post("http://localhost:5000/api/auth/check-token", {
+            token: currentToken,
+          });
+          setIsLoggedIn(true);
+        } catch (error) {
+          console.error("Token không hợp lệ:", error.response.data.message);
+          handleLogout();
+        }
+      } else {
+        // Nếu không có token, logout
+        handleLogout();
+      }
+    };
+
+    // Chỉ chạy checkToken nếu đường dẫn là "/"
+    if (location.pathname === "/") {
+      checkToken();
+    }
+  }, [location.pathname, navigate]); // Thêm location.pathname vào dependency array
+
   const toggleDropdown = () => {
     setIsDropdownOpen((prevState) => !prevState);
   };
@@ -44,14 +79,8 @@ const Navbar = ({ setShowLogin }) => {
               menu
             </a>
 
-            <Link
-              to="/adminres/dashboard"
-              className={`${menu === "manage" ? "active" : ""}`}
-            >
-              restaurant
-            </Link>
           </ul>
-          {!isLoggedIn ? (
+          {isLoggedIn ? (
             <>
               <div className="navbar-right">
                 <img src={assets.search_icon} alt="" />
@@ -109,6 +138,7 @@ const Navbar = ({ setShowLogin }) => {
                 <img src={assets.basket_icon} alt="" />
                 <div className={getTotalCartAmount() > 0 ? "dot" : ""}></div>
               </Link>
+
               <Link to="/authentication/login" className="navbar-search-icon">
                 <button>Sign In</button>
               </Link>
